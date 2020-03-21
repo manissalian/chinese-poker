@@ -1,89 +1,89 @@
-const single = (hand) => {
-  return hand.length === 1
+const single = (cards) => {
+  return cards.length === 1
 }
 
-const pair = (hand) => {
-  return hand.length === 2 &&
-          hand[0].value === hand[1].value
+const pair = (cards) => {
+  return cards.length === 2 &&
+          cards[0].value === cards[1].value
 }
 
-const threeOfAKind = (hand) => {
-  return hand.length === 3 &&
-          hand[0].value === hand[1].value &&
-          hand[0].value === hand[2].value
+const threeOfAKind = (cards) => {
+  return cards.length === 3 &&
+          cards[0].value === cards[1].value &&
+          cards[0].value === cards[2].value
 }
 
-const straight = (hand) => {
-  if (hand.length !== 5) return false
+const straight = (cards) => {
+  if (cards.length !== 5) return false
 
-  const sortedHand = sortHand(hand)
+  const sortedCards = sortCards(cards)
 
   for (let i = 0; i < 4; i += 1) {
-    if (sortedHand[i].value !== sortedHand[i + 1].value - 1) return false
+    if (sortedCards[i].value !== sortedCards[i + 1].value - 1) return false
   }
 
   return true
 }
 
-const flush = (hand) => {
-  if (hand.length !== 5) return false
+const flush = (cards) => {
+  if (cards.length !== 5) return false
 
-  return hand[0].category === hand[1].category &&
-          hand[0].category === hand[2].category &&
-          hand[0].category === hand[3].category &&
-          hand[0].category === hand[4].category
+  return cards[0].category === cards[1].category &&
+          cards[0].category === cards[2].category &&
+          cards[0].category === cards[3].category &&
+          cards[0].category === cards[4].category
 }
 
-const fullHouse = (hand) => {
-  if (hand.length !== 5) return false
+const fullHouse = (cards) => {
+  if (cards.length !== 5) return false
 
-  const sortedHand = sortHand(hand)
+  const sortedCards = sortCards(cards)
 
-  if (sortedHand[0].value === sortedHand[1].value &&
-      sortedHand[0].value === sortedHand[2].value) {
-    return sortedHand[3].value === sortedHand[4].value
-  } else if (sortedHand[2].value === sortedHand[3].value &&
-              sortedHand[2].value === sortedHand[4].value) {
-    return sortedHand[0].value === sortedHand[1].value
+  if (sortedCards[0].value === sortedCards[1].value &&
+      sortedCards[0].value === sortedCards[2].value) {
+    return sortedCards[3].value === sortedCards[4].value
+  } else if (sortedCards[2].value === sortedCards[3].value &&
+              sortedCards[2].value === sortedCards[4].value) {
+    return sortedCards[0].value === sortedCards[1].value
   }
 
   return false
 }
 
-const fourOfAKind = (hand) => {
-  if (hand.length !== 5) return false
+const fourOfAKind = (cards) => {
+  if (cards.length !== 5) return false
 
-  const sortedHand = sortHand(hand)
+  const sortedCards = sortCards(cards)
 
-  if (sortedHand[0].value === sortedHand[1].value &&
-      sortedHand[0].value === sortedHand[2].value &&
-      sortedHand[0].value === sortedHand[3].value) {
+  if (sortedCards[0].value === sortedCards[1].value &&
+      sortedCards[0].value === sortedCards[2].value &&
+      sortedCards[0].value === sortedCards[3].value) {
     return true
-  } else if (sortedHand[1].value === sortedHand[2].value &&
-              sortedHand[1].value === sortedHand[3].value &&
-              sortedHand[1].value === sortedHand[4].value) {
+  } else if (sortedCards[1].value === sortedCards[2].value &&
+              sortedCards[1].value === sortedCards[3].value &&
+              sortedCards[1].value === sortedCards[4].value) {
     return true
   }
 
   return false
 }
 
-const straightFlush = (hand) => {
-  return flush(hand) && straight(hand)
+const straightFlush = (cards) => {
+  return flush(cards) && straight(cards)
 }
 
-const royalFlush = (hand) => {
-  if (!straightFlush(hand)) return false
+const royalFlush = (cards) => {
+  if (!straightFlush(cards)) return false
 
-  const sortedHand = sortHand(hand)
+  const sortedCards = sortCards(cards)
 
-  return sortedHand[4].value === 13
+  return sortedCards[4].value === 13
 }
 
-const sortHand = (hand) => {
-  const _hand = hand.slice()
+const sortCards = (cards) => {
+  const _cards = cards.slice()
 
-  return _hand.sort((cardA, cardB) => {
+  return _cards.sort((cardA, cardB) => {
     return cardA.value > cardB.value ? 1 : -1
   })
 }
