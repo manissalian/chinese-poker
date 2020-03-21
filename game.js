@@ -1,4 +1,5 @@
 const cards = require('./cards')
+const Player = require('./player')
 
 let gameId = 0
 
@@ -31,17 +32,6 @@ class Game {
       this.players[playerIndex].cards.push(card)
       distributingCards.splice(cardIndex, 1)
     }
-    console.log(this.players[0].cards)
-    console.log(this.players[1].cards)
-    console.log(this.players[2].cards)
-    console.log(this.players[3].cards)
-  }
-}
-
-class Player {
-  constructor(id) {
-    this.id = id
-    this.cards = []
   }
 }
 
