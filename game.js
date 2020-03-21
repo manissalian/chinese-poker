@@ -1,7 +1,6 @@
-const cards = require('./cards')
 const Player = require('./player')
-
-let gameId = 0
+const cardTypes = require('./card/types')
+const Card = require('./card/card')
 
 class Game {
   constructor (id) {
@@ -23,17 +22,16 @@ class Game {
   }
 
   deal () {
-    let distributingCards = cards.slice()
-    for (let i = 0; i < cards.length; i += 1) {
+    let distributingCards = cardTypes.slice()
+    for (let i = 0; i < cardTypes.length; i += 1) {
       const cardIndex = Math.floor(Math.random() * distributingCards.length)
       const card = distributingCards[cardIndex]
       const playerIndex = i % 4
 
-      this.players[playerIndex].cards.push(card)
+      this.players[playerIndex].cards.push(new Card(card))
       distributingCards.splice(cardIndex, 1)
     }
   }
 }
 
-const game = new Game(++gameId)
-game.start()
+module.exports = Game
