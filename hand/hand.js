@@ -4,9 +4,20 @@ const score = require('./score')
 class Hand {
   constructor(cards) {
     this.cards = cards
-    this.count = cards.length
     this.type = this.determineType()
     this.score = this.determineScore()
+  }
+
+  getCards () {
+    return this.cards
+  }
+
+  getType () {
+    return this.type
+  }
+
+  getScore () {
+    return this.score
   }
 
   determineType () {
@@ -23,8 +34,8 @@ class Hand {
 
   determineScore () {
     const typeScore = score.typeScore(this.type) * 1000
-    const valueScore = score.valueScore(this) * (this.isTypeFlush ? 1 : 10)
-    const categoryScore = score.categoryScore(this) * (this.isTypeFlush ? 100 : 1)
+    const valueScore = score.valueScore(this) * (this.isTypeFlush() ? 1 : 10)
+    const categoryScore = score.categoryScore(this) * (this.isTypeFlush() ? 100 : 1)
 
     return typeScore + valueScore + categoryScore
   }

@@ -1,4 +1,8 @@
 const Game = require('./game')
+const Card = require('./card/card')
+const Hand = require('./hand/hand')
+
+const readline = require('readline')
 
 let gameId = 0
 
@@ -6,16 +10,38 @@ const game = new Game(++gameId)
 game.createPlayers()
 game.startNextRound()
 
-const readline = require('readline')
-const rl = readline.createInterface({
+const prompt = () => {
+  const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
-})
+  })
 
-const playersTurn = game.getCurrentRound().getPlayerTurn()
-console.log(game.getPlayerById(playersTurn).getCards())
+  const currentRound = game.getCurrentRound()
+  const playerTurn = currentRound.getPlayerTurn()
+  const player = game.getPlayerById(playerTurn)
+  const playerCards = player.getCards()
 
-rl.question('Player ' + playersTurn + ', pick card (number): ', index => {
-  console.log('selected card is: ', game.getPlayerById(1).getCardAtIndex(index - 1))
-  rl.close()
-})
+  console.log(playerCards)
+
+  rl.question('Player ' + playerTurn + ', pick a hand (card numbers, comma separated, ex 15): ', handInput => {
+    rl.close()
+
+    const cardNumbers = handInput.split(',')
+
+    if (cardNumbers[0] == 0) {
+      currentRound.pass(player)
+    } else {
+      const hand = new Hand(cardNumbers.map(cardNumber => playerCards[cardNumber - 1]))
+
+      currentRound.playHand(player, hand)
+    }
+
+    const currentRoundStatus = currentRound.getStatus()
+
+    if (currentRoundStatus === 'inProgress') {
+      prompt()
+    }
+  })
+}
+
+prompt()

@@ -13,6 +13,11 @@ class Player {
     this.cards.push(card)
   }
 
+  removeCard (card) {
+    const cardIndex = this.cards.indexOf(card)
+    this.cards.splice(cardIndex, 1)
+  }
+
   getCards () {
     return this.cards
   }
