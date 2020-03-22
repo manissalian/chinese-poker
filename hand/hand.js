@@ -4,6 +4,7 @@ const score = require('./score')
 class Hand {
   constructor(cards) {
     this.cards = cards
+
     this.type = this.determineType()
     this.score = this.determineScore()
   }

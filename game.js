@@ -4,6 +4,7 @@ const Round = require('./round')
 class Game {
   constructor (id) {
     this.id = id
+
     this.players = []
     this.rounds = []
   }

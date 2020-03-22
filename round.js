@@ -5,10 +5,11 @@ class Round {
   constructor (id, game) {
     this.id = id
     this.game = game
+
     this.playerTurn = null
-    this.status = 'inProgress'
     this.currentHand = null
     this.passes = 0
+    this.status = 'inProgress'
   }
 
   getId () {
