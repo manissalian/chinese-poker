@@ -4,13 +4,13 @@ const single = (cards) => {
 
 const pair = (cards) => {
   return cards.length === 2 &&
-          cards[0].value === cards[1].value
+          cards[0].getValue() === cards[1].getValue()
 }
 
 const threeOfAKind = (cards) => {
   return cards.length === 3 &&
-          cards[0].value === cards[1].value &&
-          cards[0].value === cards[2].value
+          cards[0].getValue() === cards[1].getValue() &&
+          cards[0].getValue() === cards[2].getValue()
 }
 
 const straight = (cards) => {
@@ -19,7 +19,7 @@ const straight = (cards) => {
   const sortedCards = sortCards(cards)
 
   for (let i = 0; i < 4; i += 1) {
-    if (sortedCards[i].value !== sortedCards[i + 1].value - 1) return false
+    if (sortedCards[i].getValue() !== sortedCards[i + 1].getValue() - 1) return false
   }
 
   return true
@@ -28,10 +28,10 @@ const straight = (cards) => {
 const flush = (cards) => {
   if (cards.length !== 5) return false
 
-  return cards[0].category === cards[1].category &&
-          cards[0].category === cards[2].category &&
-          cards[0].category === cards[3].category &&
-          cards[0].category === cards[4].category
+  return cards[0].getCategory() === cards[1].getCategory() &&
+          cards[0].getCategory() === cards[2].getCategory() &&
+          cards[0].getCategory() === cards[3].getCategory() &&
+          cards[0].getCategory() === cards[4].getCategory()
 }
 
 const fullHouse = (cards) => {
@@ -39,12 +39,12 @@ const fullHouse = (cards) => {
 
   const sortedCards = sortCards(cards)
 
-  if (sortedCards[0].value === sortedCards[1].value &&
-      sortedCards[0].value === sortedCards[2].value) {
-    return sortedCards[3].value === sortedCards[4].value
-  } else if (sortedCards[2].value === sortedCards[3].value &&
-              sortedCards[2].value === sortedCards[4].value) {
-    return sortedCards[0].value === sortedCards[1].value
+  if (sortedCards[0].getValue() === sortedCards[1].getValue() &&
+      sortedCards[0].getValue() === sortedCards[2].getValue()) {
+    return sortedCards[3].getValue() === sortedCards[4].getValue()
+  } else if (sortedCards[2].getValue() === sortedCards[3].getValue() &&
+              sortedCards[2].getValue() === sortedCards[4].getValue()) {
+    return sortedCards[0].getValue() === sortedCards[1].getValue()
   }
 
   return false
@@ -55,13 +55,13 @@ const fourOfAKind = (cards) => {
 
   const sortedCards = sortCards(cards)
 
-  if (sortedCards[0].value === sortedCards[1].value &&
-      sortedCards[0].value === sortedCards[2].value &&
-      sortedCards[0].value === sortedCards[3].value) {
+  if (sortedCards[0].getValue() === sortedCards[1].getValue() &&
+      sortedCards[0].getValue() === sortedCards[2].getValue() &&
+      sortedCards[0].getValue() === sortedCards[3].getValue()) {
     return true
-  } else if (sortedCards[1].value === sortedCards[2].value &&
-              sortedCards[1].value === sortedCards[3].value &&
-              sortedCards[1].value === sortedCards[4].value) {
+  } else if (sortedCards[1].getValue() === sortedCards[2].getValue() &&
+              sortedCards[1].getValue() === sortedCards[3].getValue() &&
+              sortedCards[1].getValue() === sortedCards[4].getValue()) {
     return true
   }
 
@@ -77,14 +77,14 @@ const royalFlush = (cards) => {
 
   const sortedCards = sortCards(cards)
 
-  return sortedCards[4].value === 13
+  return sortedCards[4].getValue() === 13
 }
 
 const sortCards = (cards) => {
   const _cards = cards.slice()
 
   return _cards.sort((cardA, cardB) => {
-    return cardA.value > cardB.value ? 1 : -1
+    return cardA.getValue() > cardB.getValue() ? 1 : -1
   })
 }
 

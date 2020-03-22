@@ -34,53 +34,53 @@ module.exports = {
     const _cards = hand.cards.slice()
 
     const sortedCards = _cards.sort((cardA, cardB) => {
-      return cardA.value > cardB.value ? 1 : -1
+      return cardA.getValue() > cardB.getValue() ? 1 : -1
     })
 
     if (hand.type === 'fullHouse') {
-      if (sortedCards[0].value === sortedCards[1].value &&
-          sortedCards[0].value === sortedCards[2].value) {
-        return sortedCards[0].value
-      } else if (sortedCards[2].value === sortedCards[3].value &&
-                  sortedCards[2].value === sortedCards[4].value) {
-        return sortedCards[2].value
+      if (sortedCards[0].getValue() === sortedCards[1].getValue() &&
+          sortedCards[0].getValue() === sortedCards[2].getValue()) {
+        return sortedCards[0].getValue()
+      } else if (sortedCards[2].getValue() === sortedCards[3].getValue() &&
+                  sortedCards[2].getValue() === sortedCards[4].getValue()) {
+        return sortedCards[2].getValue()
       }
     }
 
     if (hand.type === 'fourOfAKind') {
-      if (sortedCards[0].value === sortedCards[1].value &&
-          sortedCards[0].value === sortedCards[2].value &&
-          sortedCards[0].value === sortedCards[3].value) {
-        return sortedCards[0].value
-      } else if (sortedCards[1].value === sortedCards[2].value &&
-                  sortedCards[1].value === sortedCards[3].value &&
-                  sortedCards[1].value === sortedCards[4].value) {
-        return sortedCards[1].value
+      if (sortedCards[0].getValue() === sortedCards[1].getValue() &&
+          sortedCards[0].getValue() === sortedCards[2].getValue() &&
+          sortedCards[0].getValue() === sortedCards[3].getValue()) {
+        return sortedCards[0].getValue()
+      } else if (sortedCards[1].getValue() === sortedCards[2].getValue() &&
+                  sortedCards[1].getValue() === sortedCards[3].getValue() &&
+                  sortedCards[1].getValue() === sortedCards[4].getValue()) {
+        return sortedCards[1].getValue()
       }
     }
 
-    return sortedCards[_cards.length - 1].value
+    return sortedCards[_cards.length - 1].getValue()
   },
   categoryScore: (hand) => {
     const _cards = hand.cards.slice()
 
     const sortedCards = _cards.sort((cardA, cardB) => {
-      return cardA.value > cardB.value ? 1 : -1
+      return cardA.getValue() > cardB.getValue() ? 1 : -1
     })
 
     if (hand.type === 'fullHouse') {
-      if (sortedCards[0].value === sortedCards[1].value &&
-          sortedCards[0].value === sortedCards[2].value) {
+      if (sortedCards[0].getValue() === sortedCards[1].getValue() &&
+          sortedCards[0].getValue() === sortedCards[2].getValue()) {
         sortedCards.splice(3, 2)
-      } else if (sortedCards[2].value === sortedCards[3].value &&
-                  sortedCards[2].value === sortedCards[4].value) {
+      } else if (sortedCards[2].getValue() === sortedCards[3].getValue() &&
+                  sortedCards[2].getValue() === sortedCards[4].getValue()) {
         sortedCards.splice(0, 2)
       }
     }
 
-    if (sortedCards.find(card => card.category === 'S')) return 4
-    if (sortedCards.find(card => card.category === 'H')) return 3
-    if (sortedCards.find(card => card.category === 'C')) return 2
-    if (sortedCards.find(card => card.category === 'D')) return 1
+    if (sortedCards.find(card => card.getCategory() === 'S')) return 4
+    if (sortedCards.find(card => card.getCategory() === 'H')) return 3
+    if (sortedCards.find(card => card.getCategory() === 'C')) return 2
+    if (sortedCards.find(card => card.getCategory() === 'D')) return 1
   }
 }

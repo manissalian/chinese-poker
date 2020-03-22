@@ -1,36 +1,39 @@
 const Player = require('./player')
-const cardTypes = require('./card/types')
-const Card = require('./card/card')
+const Round = require('./round')
 
 class Game {
   constructor (id) {
     this.id = id
     this.players = []
-  }
-
-  start () {
-    this.createPlayers()
-    this.deal()
+    this.rounds = []
   }
 
   createPlayers () {
-    let playerId = 0
     for (let i = 0; i < 4; i += 1) {
-      const player = new Player(++playerId)
+      const player = new Player(i + 1)
       this.players.push(player)
     }
   }
 
-  deal () {
-    let distributingCards = cardTypes.slice()
-    for (let i = 0; i < cardTypes.length; i += 1) {
-      const cardIndex = Math.floor(Math.random() * distributingCards.length)
-      const card = distributingCards[cardIndex]
-      const playerIndex = i % 4
+  getPlayers () {
+    return this.players
+  }
 
-      this.players[playerIndex].cards.push(new Card(card))
-      distributingCards.splice(cardIndex, 1)
-    }
+  getPlayerById (id) {
+    return this.players.find(player => player.id === id)
+  }
+
+  getCurrentRound () {
+    const roundsCount = this.rounds.length
+    return roundsCount ? this.rounds[roundsCount - 1] : null
+  }
+
+  startNextRound () {
+    const currentRound = this.getCurrentRound()
+    const roundId = currentRound ? currentRound.getId() + 1 : 1
+    const round = new Round(roundId, this)
+    this.rounds.push(round)
+    round.deal()
   }
 }
 

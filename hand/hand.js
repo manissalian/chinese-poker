@@ -30,9 +30,9 @@ class Hand {
   }
 
   isTypeFlush () {
-    return hand.type === 'flush' ||
-            hand.type === 'straightFlush' ||
-            hand.type === 'royalFlush'
+    return this.type === 'flush' ||
+            this.type === 'straightFlush' ||
+            this.type === 'royalFlush'
   }
 }
 
