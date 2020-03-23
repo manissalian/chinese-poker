@@ -6,6 +6,18 @@ class Player {
     this.cards = []
   }
 
+  getId () {
+    return this.id
+  }
+
+  getCards () {
+    return this.cards
+  }
+
+  getCardAtIndex (i) {
+    return this.cards[i]
+  }
+
   setScore (score) {
     this.score = score
   }
@@ -17,14 +29,6 @@ class Player {
   removeCard (card) {
     const cardIndex = this.cards.indexOf(card)
     this.cards.splice(cardIndex, 1)
-  }
-
-  getCards () {
-    return this.cards
-  }
-
-  getCardAtIndex (i) {
-    return this.cards[i]
   }
 }
 

@@ -10,6 +10,7 @@ class Round {
     this.currentHand = null
     this.passes = 0
     this.status = 'inProgress'
+    this.winner = null
   }
 
   getId () {
@@ -22,6 +23,10 @@ class Round {
 
   getStatus () {
     return this.status
+  }
+
+  getWinner () {
+    return this.winner
   }
 
   deal () {
@@ -40,6 +45,8 @@ class Round {
   }
 
   determinePlayerTurn () {
+    if (this.status === 'complete') return
+
     // second turn +
     if (this.playerTurn) {
       this.playerTurn = this.playerTurn + (this.playerTurn < 4 ? 1 : -3)
@@ -52,6 +59,7 @@ class Round {
     } else {
       // first turn, second round +
       // winner
+      this.playerTurn = this.game.getPreviousRound().getWinner().getId()
     }
   }
 
@@ -106,6 +114,14 @@ class Round {
 
     this.passes = 0
 
+    if (!player.getCards().length) {
+      this.status = 'complete'
+
+      this.setScores()
+
+      this.winner = player
+    }
+
     this.determinePlayerTurn()
   }
 
@@ -132,6 +148,18 @@ class Round {
 
   isFirstRound () {
     return this.id === 1
+  }
+
+  setScores () {
+    const players = this.game.getPlayers()
+
+    for (let i in players) {
+      const player = players[i]
+      const cardsCount = player.getCards().length
+      const playerScore = cardsCount * (cardsCount > 10 ? 3 : cardsCount > 5 ? 2 : 1)
+
+      player.setScore(playerScore)
+    }
   }
 }
 

@@ -20,6 +20,10 @@ class Game {
     return this.players
   }
 
+  getPreviousRound () {
+    return this.rounds[this.rounds.length - 2]
+  }
+
   getPlayerById (id) {
     return this.players.find(player => player.id === id)
   }
@@ -35,6 +39,14 @@ class Game {
     const round = new Round(roundId, this)
     this.rounds.push(round)
     round.deal()
+  }
+
+  isComplete () {
+    return this.players.find(player => player.score > 100) ? true : false
+  }
+
+  getBestPlayer () {
+    return this.players.reduce((playerA, playerB) => playerA.score < playerB.score ? playerA : playerB)
   }
 }
 

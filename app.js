@@ -23,7 +23,7 @@ const prompt = () => {
 
   console.log(playerCards)
 
-  rl.question('Player ' + playerTurn + ', pick a hand (card numbers, comma separated, ex 15): ', handInput => {
+  rl.question('Player ' + playerTurn + ', pick a hand (card numbers, comma separated): ', handInput => {
     rl.close()
 
     const cardNumbers = handInput.split(',')
@@ -40,6 +40,15 @@ const prompt = () => {
 
     if (currentRoundStatus === 'inProgress') {
       prompt()
+    } else {
+      console.log('Player ' + player.id + ' wins')
+
+      if (game.isComplete()) {
+        console.log('Game complete. Winner is: ', game.getBestPlayer().id)
+      } else {
+        game.startNextRound()
+        prompt()
+      }
     }
   })
 }
