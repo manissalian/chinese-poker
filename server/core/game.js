@@ -16,6 +16,24 @@ class Game {
     }
   }
 
+  addPlayer (cb) {
+    const playersCount = this.players.length
+
+    if (playersCount >= 4) return
+
+    const player = new Player(playersCount + 1)
+    this.players.push(player)
+
+    if (cb) {
+      cb(player) 
+    }
+  }
+
+  removePlayer (player) {
+    const playerIndex = this.players.indexOf(player)
+    this.players.splice(playerIndex, 1)
+  }
+
   getPlayers () {
     return this.players
   }
@@ -33,12 +51,21 @@ class Game {
     return roundsCount ? this.rounds[roundsCount - 1] : null
   }
 
-  startNextRound () {
+  startNextRound (cb) {
     const currentRound = this.getCurrentRound()
+
+    if (currentRound && currentRound.getStatus() === 'inProgress') return
+
+    if (this.players.length < 4) return
+
     const roundId = currentRound ? currentRound.getId() + 1 : 1
     const round = new Round(roundId, this)
     this.rounds.push(round)
     round.deal()
+
+    if (cb) {
+      cb()
+    }
   }
 
   isComplete () {

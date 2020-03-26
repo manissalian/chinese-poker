@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>Chinese Poker</title>
+    <script src="socket.io.js"></script>
+    <script>
+      const socket = io('http://localhost:3000')
+
+      const join = () => {
+        const name = document.getElementById('name-input').value
+
+        if (!name) {
+          alert('enter name before you join')
+          return
+        }
+
+        socket.emit('join', name)
+      }
+
+      socket.on('gameStarted', () => {
+        document.getElementById('text-output').innerHTML = 'gameStarted'
+      })
+    </script>
+  </head>
+  <body>
+    <p id="text-output"></p>
+    <input id="name-input" type="text" placeholder="Enter your name">
+    <button onclick="join()">Join</button>
+  </body>
+</html>
