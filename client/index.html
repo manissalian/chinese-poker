@@ -2,8 +2,12 @@
   <head>
     <title>Chinese Poker</title>
     <script src="socket.io.js"></script>
+    <script src="fetch.js"></script>
     <script>
-      const socket = io('http://localhost:3000')
+      const host = 'http://localhost:3000'
+      const socket = io(host)
+
+      let player = null
 
       const join = () => {
         const name = document.getElementById('name-input').value
@@ -16,14 +20,30 @@
         socket.emit('join', name)
       }
 
+      socket.on('joined', playerInfo => {
+        player = playerInfo
+      })
+
       socket.on('gameStarted', () => {
-        document.getElementById('text-output').innerHTML = 'gameStarted'
+        fetchAsync(host + '/player/' + player.id).then(playerInfo =>  {
+          player = playerInfo
+
+          let cards = ''
+          for (let i in player.cards) {
+            const card = player.cards[i]
+            cards += card.category + card.value + ', '
+          }
+          document.getElementById('own-cards').innerHTML = cards
+        })
       })
     </script>
+
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <p id="text-output"></p>
     <input id="name-input" type="text" placeholder="Enter your name">
     <button onclick="join()">Join</button>
+
+    <div id="own-cards"></div>
   </body>
 </html>

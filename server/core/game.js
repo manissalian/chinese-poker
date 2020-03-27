@@ -43,7 +43,7 @@ class Game {
   }
 
   getPlayerById (id) {
-    return this.players.find(player => player.id === id)
+    return this.players.find(player => player.id == id)
   }
 
   getCurrentRound () {

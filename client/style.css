@@ -1,0 +1,8 @@
+#own-cards {
+  position: fixed;
+  background-color: darkgray;
+  bottom: 1rem;
+  left: 12.5%;
+  width: 75%;
+  height: 4rem;
+}
