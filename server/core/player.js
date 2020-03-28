@@ -19,7 +19,7 @@ class Player {
   }
 
   getCardByCategoryAndValue (category, value) {
-    return this.cards.find(card => card.category === category && card.value === value)
+    return this.cards.find(card => card.getCategory() === category && card.getValue() === value)
   }
 
   setScore (score) {

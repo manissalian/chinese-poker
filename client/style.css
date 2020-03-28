@@ -2,17 +2,18 @@ body {
   background-color: silver;
 }
 
-.cards {
+#own-cards {
   position: fixed;
   bottom: 1rem;
-  left: calc((100% - 80rem) / 2);
+  left: calc((100% - 78rem) / 2);
 
   display: flex;
+  justify-content: center;
 
   padding: 0.5rem 0.25rem;
   box-sizing: border-box;
 
-  width: 80rem;
+  width: 78rem;
   height: 9.5rem;
 
   background-color: gray;
@@ -21,9 +22,9 @@ body {
 }
 
 .card {
-  flex: 1;
-
   margin: 0rem 0.25rem;
+
+  width: 5.5rem;
 
   cursor: pointer;
 }
@@ -69,7 +70,7 @@ body {
 #player-name {
   position: fixed;
   bottom: 12rem;
-  left: calc((100% - 80rem) / 2);
+  left: calc((100% - 78rem) / 2);
 
   width: 24rem;
   height: 3rem;
@@ -82,4 +83,18 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#ground {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  pointer-events: none;
 }

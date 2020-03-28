@@ -63,7 +63,7 @@ class Round {
     }
   }
 
-  playHand (player, hand) {
+  playHand (player, hand, cb) {
     console.log('selected hand is: ', hand)
 
     const handType = hand.getType()
@@ -92,6 +92,10 @@ class Round {
       this.currentHand = hand
 
       this.determinePlayerTurn()
+
+      if (cb) {
+        cb() 
+      }
 
       return
     }
@@ -123,6 +127,10 @@ class Round {
     }
 
     this.determinePlayerTurn()
+
+    if (cb) {
+      cb() 
+    }
   }
 
   pass (player) {

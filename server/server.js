@@ -49,11 +49,18 @@ io.on('connection', socket => {
     }
 
     const player = game.getPlayerById(playerId)
-    const selectedCards = cards.map(card => player.getCardByCategoryAndValue(card.category, card.value))
+    const selectedCards = cards.map(card => {
+      return player.getCardByCategoryAndValue(card.category, card.value)
+    }).filter(card => card)
     const hand = new Hand(selectedCards)
     const currentRound = game.getCurrentRound()
 
-    currentRound.playHand(player, hand)
+    currentRound.playHand(player, hand, () => {
+      io.emit('handPlayed', {
+        cards: hand.getCards(),
+        playerId: player.id
+      })
+    })
   })
 
   socket.on('pass', playerId => {

@@ -37,6 +37,7 @@
 
             const cardElement = document.createElement('div')
             cardElement.classList.add('card')
+            cardElement.setAttribute('id', card.category + card.value)
             cardElement.setAttribute('draggable', true)
             cardElement.addEventListener('dragstart', onCardDragStart)
             cardElement.addEventListener('dragover', onCardDragOver)
@@ -56,6 +57,45 @@
 
         document.getElementById('player-name').innerHTML = player.name
       })
+
+      socket.on('handPlayed', data => {
+        const {
+          cards,
+          playerId
+        } = data
+
+        const ground = document.getElementById('ground')
+
+        while (ground.firstChild) ground.removeChild(ground.firstChild)
+
+        cards.map(card => {
+          const cardElement = document.createElement('div')
+          cardElement.classList.add('card')
+
+          const cardImageElement = document.createElement('img')
+          cardImageElement.classList.add('card-image')
+          cardImageElement.src = 'assets/cards/' + mapCardToAsset(card) + '.jpg'
+          cardImageElement.setAttribute('draggable', false)
+          cardElement.appendChild(cardImageElement)
+
+          ground.appendChild(cardElement)
+        })
+
+        if (playerId === player.id) {
+          selectedCards = []
+
+          cards.map(card => {
+            const playerCard = player.cards.find(pCard => pCard.category === card.category && pCard.value === card.value)
+            const cardIndex = player.cards.indexOf(playerCard)
+
+            player.cards.splice(cardIndex, 1)
+
+            const cardElement = document.getElementById(card.category + card.value)
+            const ownCards = document.getElementById('own-cards')
+            ownCards.removeChild(cardElement)
+          })
+        }
+      })
     </script>
 
     <link rel="stylesheet" href="style.css">
@@ -70,6 +110,8 @@
       <div id="play-btn" onclick="playHand()">Play</div>
     </div>
     <div id="player-name"></div>
+
+    <div id="ground"></div>
 
     <script src="dragSwap.js"></script>
   </body>
