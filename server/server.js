@@ -5,6 +5,8 @@ const cors = require('cors')
 
 const Game = require('./extensions/game_server')
 const Player = require('./extensions/player_server')
+const Hand = require('./core/hand/hand')
+const Card = require('./core/card/card')
 
 const playerRoute = require('./routes/player.js')
 
@@ -24,7 +26,6 @@ io.on('connection', socket => {
 
     game.addPlayer(player => {
       player.registerToServer(player, name, socket.id)
-
       socket.emit('joined', player)
 
       game.startNextRound(() => {
@@ -35,6 +36,19 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     game.unregisterPlayerFromServer(game, socket)
+  })
+
+  socket.on('play', data => {
+    const {
+      playerId,
+      cards
+    } = data
+
+    const selectedCards = cards.map(card => new Card(card))
+    const hand = new Hand(selectedCards)
+    const currentRound = game.getCurrentRound()
+
+    currentRound.playHand(playerId, hand)
   })
 })
 

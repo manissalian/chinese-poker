@@ -3,6 +3,9 @@
     <title>Chinese Poker</title>
     <script src="socket.io.js"></script>
     <script src="fetch.js"></script>
+    <script src="cardMap.js"></script>
+    <script src="cardSelect.js"></script>
+    <script src="actions.js"></script>
     <script>
       const host = 'http://localhost:3000'
       const socket = io(host)
@@ -28,13 +31,30 @@
         fetchAsync(host + '/player/' + player.id).then(playerInfo =>  {
           player = playerInfo
 
-          let cards = ''
+          const ownCards = document.getElementById('own-cards')
           for (let i in player.cards) {
             const card = player.cards[i]
-            cards += card.category + card.value + ', '
+
+            const cardElement = document.createElement('div')
+            cardElement.classList.add('card')
+            cardElement.setAttribute('draggable', true)
+            cardElement.addEventListener('dragstart', onCardDragStart)
+            cardElement.addEventListener('dragover', onCardDragOver)
+            cardElement.addEventListener('click', e => {
+              toggleSelectCard(card, cardElement)
+            })
+
+            const cardImageElement = document.createElement('img')
+            cardImageElement.classList.add('card-image')
+            cardImageElement.src = 'assets/cards/' + mapCardToAsset(card) + '.jpg'
+            cardImageElement.setAttribute('draggable', false)
+            cardElement.appendChild(cardImageElement)
+
+            ownCards.appendChild(cardElement)
           }
-          document.getElementById('own-cards').innerHTML = cards
         })
+
+        document.getElementById('player-name').innerHTML = player.name
       })
     </script>
 
@@ -44,6 +64,10 @@
     <input id="name-input" type="text" placeholder="Enter your name">
     <button onclick="join()">Join</button>
 
-    <div id="own-cards"></div>
+    <div id="own-cards" class="cards"></div>
+    <div id="play-btn" onclick="playHand()">Play</div>
+    <div id="player-name"></div>
+
+    <script src="dragSwap.js"></script>
   </body>
 </html>

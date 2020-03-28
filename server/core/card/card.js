@@ -1,9 +1,19 @@
 class Card {
   constructor(card) {
-    const segments = card.split('-')
+    let {
+      category,
+      value
+    } = card
 
-    this.category = segments[0]
-    this.value = parseInt(segments[1])
+    if (typeof card === 'string') {
+      const segments = card.split('-')
+
+      category = segments[0]
+      value = parseInt(segments[1])
+    }
+
+    this.category = category
+    this.value = value
   }
 
   getCategory () {

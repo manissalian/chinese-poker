@@ -63,9 +63,10 @@ class Round {
     }
   }
 
-  playHand (player, hand) {
+  playHand (playerId, hand) {
     console.log('selected hand is: ', hand)
 
+    const player = this.game.getPlayerById(playerId)
     const handType = hand.getType()
     const cards = hand.getCards()
 
