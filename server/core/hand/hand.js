@@ -15,6 +15,10 @@ class Hand {
     return this.cards
   }
 
+  getSize () {
+    return this.cards.length
+  }
+
   getType () {
     return this.type
   }

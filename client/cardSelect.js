@@ -1,5 +1,3 @@
-const selectedCards = []
-
 const toggleSelectCard = (card, el) => {
   const isCardSelected = selectedCards.indexOf(card) > -1 ? true : false
 

@@ -11,6 +11,7 @@
       const socket = io(host)
 
       let player = null
+      let selectedCards = []
 
       const join = () => {
         const name = document.getElementById('name-input').value
@@ -27,35 +28,63 @@
         player = playerInfo
       })
 
-      socket.on('gameStarted', () => {
-        fetchAsync(host + '/player/' + player.id).then(playerInfo =>  {
-          player = playerInfo
+      socket.on('gameStarted', players => {
+        player = players.find(p => p.id === player.id)
 
-          const ownCards = document.getElementById('own-cards')
-          for (let i in player.cards) {
-            const card = player.cards[i]
+        const ownCards = document.getElementById('own-cards')
+        for (let i in player.cards) {
+          const card = player.cards[i]
 
-            const cardElement = document.createElement('div')
-            cardElement.classList.add('card')
-            cardElement.setAttribute('id', card.category + card.value)
-            cardElement.setAttribute('draggable', true)
-            cardElement.addEventListener('dragstart', onCardDragStart)
-            cardElement.addEventListener('dragover', onCardDragOver)
-            cardElement.addEventListener('click', e => {
-              toggleSelectCard(card, cardElement)
-            })
+          const cardElement = document.createElement('div')
+          cardElement.classList.add('card')
+          cardElement.setAttribute('id', card.category + card.value)
+          cardElement.setAttribute('draggable', true)
+          cardElement.addEventListener('dragstart', onCardDragStart)
+          cardElement.addEventListener('dragover', onCardDragOver)
+          cardElement.addEventListener('click', e => {
+            toggleSelectCard(card, cardElement)
+          })
 
-            const cardImageElement = document.createElement('img')
-            cardImageElement.classList.add('card-image')
-            cardImageElement.src = 'assets/cards/' + mapCardToAsset(card) + '.jpg'
-            cardImageElement.setAttribute('draggable', false)
-            cardElement.appendChild(cardImageElement)
+          const cardImageElement = document.createElement('img')
+          cardImageElement.classList.add('card-image')
+          cardImageElement.src = 'assets/cards/' + mapCardToAsset(card) + '.jpg'
+          cardImageElement.setAttribute('draggable', false)
+          cardElement.appendChild(cardImageElement)
 
-            ownCards.appendChild(cardElement)
-          }
-        })
+          ownCards.appendChild(cardElement)
+        }
 
         document.getElementById('player-name').innerHTML = player.name
+
+        const opponentDeck1 = document.getElementById('opponent-deck-1')
+        const opponentId1 = player.id === 4 ? 1 : player.id + 1
+        opponentDeck1.setAttribute('player-id', opponentId1)
+        const opponentDeck2 = document.getElementById('opponent-deck-2')
+        const opponentId2 = opponentId1 === 4 ? 1 : opponentId1 + 1
+        opponentDeck2.setAttribute('player-id', opponentId2)
+        const opponentDeck3 = document.getElementById('opponent-deck-3')
+        const opponentId3 = opponentId2 === 4 ? 1 : opponentId2 + 1
+        opponentDeck3.setAttribute('player-id', opponentId3)
+
+        for (let i = 0; i < 13 ; i += 1) {
+          const opponent1Card = document.createElement('img')
+          opponent1Card.classList.add('opponent1-card')
+          opponent1Card.src = 'assets/cards/cardback.jpg'
+          opponent1Card.setAttribute('draggable', false)
+          opponentDeck1.appendChild(opponent1Card)
+
+          const opponent2Card = document.createElement('img')
+          opponent2Card.classList.add('opponent2-card')
+          opponent2Card.src = 'assets/cards/cardback.jpg'
+          opponent2Card.setAttribute('draggable', false)
+          opponentDeck2.appendChild(opponent2Card)
+
+          const opponent3Card = document.createElement('img')
+          opponent3Card.classList.add('opponent3-card')
+          opponent3Card.src = 'assets/cards/cardback.jpg'
+          opponent3Card.setAttribute('draggable', false)
+          opponentDeck3.appendChild(opponent3Card)
+        }
       })
 
       socket.on('handPlayed', data => {
@@ -94,6 +123,11 @@
             const ownCards = document.getElementById('own-cards')
             ownCards.removeChild(cardElement)
           })
+        } else {
+          const opponentDeck = document.querySelector("div[player-id='" + playerId + "']")
+          cards.map(card => {
+            opponentDeck.removeChild(opponentDeck.childNodes[0])
+          })
         }
       })
     </script>
@@ -104,12 +138,18 @@
     <input id="name-input" type="text" placeholder="Enter your name">
     <button onclick="join()">Join</button>
 
-    <div id="own-cards" class="cards"></div>
+    <div id="own-cards"></div>
     <div class="action-btns">
       <div id="pass-btn" onclick="pass()">Pass</div>
       <div id="play-btn" onclick="playHand()">Play</div>
     </div>
     <div id="player-name"></div>
+
+    <div id="opponent-deck-1"></div>
+
+    <div id="opponent-deck-2"></div>
+
+    <div id="opponent-deck-3"></div>
 
     <div id="ground"></div>
 

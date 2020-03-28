@@ -1,6 +1,8 @@
 const app = require('express')()
 const http = require('http').createServer(app)
-const io = require('socket.io')(http)
+const io = require('socket.io')(http, {
+  pingTimeout: 10000 * 1000
+})
 const cors = require('cors')
 
 const Game = require('./extensions/game_server')
@@ -16,7 +18,6 @@ http.listen(3000, () => {
 let gameId = 0
 
 const game = new Game(++gameId)
-
 io.on('connection', socket => {
   socket.on('join', name => {
     if (game.playerRegisteredToServer(game, name)) {
@@ -28,7 +29,8 @@ io.on('connection', socket => {
       socket.emit('joined', player)
 
       game.startNextRound(() => {
-        io.emit('gameStarted')
+        // remove cards/opponent_cards before sending
+        io.emit('gameStarted', game.getPlayers())
       })
     })
   })

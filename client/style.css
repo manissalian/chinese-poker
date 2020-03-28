@@ -1,10 +1,12 @@
 body {
+  margin: 0.5rem;
+
   background-color: silver;
 }
 
 #own-cards {
   position: fixed;
-  bottom: 1rem;
+  bottom: 0.5rem;
   left: calc((100% - 78rem) / 2);
 
   display: flex;
@@ -41,7 +43,7 @@ body {
 
 .action-btns {
   position: fixed;
-  bottom: 12rem;
+  bottom: 11.5rem;
   left: calc((100% - 24rem) / 2);
 
   display: flex;
@@ -69,7 +71,7 @@ body {
 
 #player-name {
   position: fixed;
-  bottom: 12rem;
+  bottom: 11.5rem;
   left: calc((100% - 78rem) / 2);
 
   width: 24rem;
@@ -97,4 +99,61 @@ body {
   align-items: center;
 
   pointer-events: none;
+}
+
+#opponent-deck-1,
+#opponent-deck-2,
+#opponent-deck-3 {
+  position: fixed;
+
+  background-color: gray;
+}
+
+#opponent-deck-1 {
+  top: 25rem;
+  right: calc((41.75rem - 4.75rem) / 2 * -1);
+
+  padding: 0.2rem;
+  margin-right: 0.5rem;
+
+  width: 41.75rem;
+  height: 4.75rem;
+
+  transform: rotate(90deg);
+}
+
+#opponent-deck-2 {
+  top: 0.5rem;
+  left: calc((100% - 54rem) / 2);
+
+  padding: 0.4rem 0.2rem;
+
+  width: 54rem;
+  height: 5.7rem;
+}
+
+#opponent-deck-3 {
+  top: 25rem;
+  left: calc((41.75rem - 4.75rem) / 2 * -1);
+
+  padding: 0.2rem;
+  margin-left: 0.5rem;
+
+  width: 41.75rem;
+  height: 4.75rem;
+
+  transform: rotate(90deg);
+}
+
+.opponent1-card,
+.opponent3-card {
+  margin: 0rem 0.1rem;
+
+  width: 3rem;
+}
+
+.opponent2-card {
+  margin: 0rem 0.2rem;
+
+  width: 3.75rem;
 }

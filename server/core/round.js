@@ -66,7 +66,6 @@ class Round {
   playHand (player, hand, cb) {
     console.log('selected hand is: ', hand)
 
-    const handType = hand.getType()
     const cards = hand.getCards()
 
     if (player.id !== this.playerTurn) {
@@ -74,7 +73,7 @@ class Round {
       return
     }
 
-    if (!handType) {
+    if (!hand.getType()) {
       console.log('invalid hand')
       return
     }
@@ -100,7 +99,7 @@ class Round {
       return
     }
 
-    if (handType !== this.currentHand.getType() && this.passes < 3) {
+    if (hand.getSize() !== this.currentHand.getSize() && this.passes < 3) {
       console.log('invalid hand type')
       return
     }
@@ -119,6 +118,8 @@ class Round {
     this.passes = 0
 
     if (!player.getCards().length) {
+      console.log(player.id + ' wins')
+
       this.status = 'complete'
 
       this.setScores()
