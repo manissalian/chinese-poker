@@ -63,10 +63,9 @@ class Round {
     }
   }
 
-  playHand (playerId, hand) {
+  playHand (player, hand) {
     console.log('selected hand is: ', hand)
 
-    const player = this.game.getPlayerById(playerId)
     const handType = hand.getType()
     const cards = hand.getCards()
 
@@ -127,6 +126,11 @@ class Round {
   }
 
   pass (player) {
+    if (player.id !== this.playerTurn) {
+      console.log('not player ' + player.id + ' turn')
+      return
+    }
+
     if (this.isFirstTurn()) {
       console.log('cant pass during first turn') 
       return

@@ -4,3 +4,7 @@ const playHand = () => {
     cards: selectedCards
   })
 }
+
+const pass = () => {
+  socket.emit('pass', player.id)
+}

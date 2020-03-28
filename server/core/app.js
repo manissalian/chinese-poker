@@ -33,7 +33,7 @@ const prompt = () => {
     } else {
       const hand = new Hand(cardNumbers.map(cardNumber => playerCards[cardNumber - 1]))
 
-      currentRound.playHand(player.id, hand)
+      currentRound.playHand(player, hand)
     }
 
     const currentRoundStatus = currentRound.getStatus()

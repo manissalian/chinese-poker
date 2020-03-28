@@ -6,7 +6,6 @@ const cors = require('cors')
 const Game = require('./extensions/game_server')
 const Player = require('./extensions/player_server')
 const Hand = require('./core/hand/hand')
-const Card = require('./core/card/card')
 
 const playerRoute = require('./routes/player.js')
 
@@ -35,7 +34,7 @@ io.on('connection', socket => {
   })
 
   socket.on('disconnect', () => {
-    game.unregisterPlayerFromServer(game, socket)
+    game.unregisterPlayerFromServer(game, socket.id)
   })
 
   socket.on('play', data => {
@@ -44,11 +43,24 @@ io.on('connection', socket => {
       cards
     } = data
 
-    const selectedCards = cards.map(card => new Card(card))
+    if (!cards) {
+      console.log('no cards received')
+      return
+    }
+
+    const player = game.getPlayerById(playerId)
+    const selectedCards = cards.map(card => player.getCardByCategoryAndValue(card.category, card.value))
     const hand = new Hand(selectedCards)
     const currentRound = game.getCurrentRound()
 
-    currentRound.playHand(playerId, hand)
+    currentRound.playHand(player, hand)
+  })
+
+  socket.on('pass', playerId => {
+    const player = game.getPlayerById(playerId)
+    const currentRound = game.getCurrentRound()
+
+    currentRound.pass(player)
   })
 })
 

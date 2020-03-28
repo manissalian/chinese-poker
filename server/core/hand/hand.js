@@ -3,6 +3,8 @@ const score = require('./score')
 
 class Hand {
   constructor(cards) {
+    if (!cards || !cards.length) return
+
     this.cards = cards
 
     this.type = this.determineType()

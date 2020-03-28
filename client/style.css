@@ -1,3 +1,7 @@
+body {
+  background-color: silver;
+}
+
 .cards {
   position: fixed;
   bottom: 1rem;
@@ -11,13 +15,8 @@
   width: 80rem;
   height: 9.5rem;
 
-  background-color: darkgray;
+  background-color: gray;
 
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
@@ -39,11 +38,16 @@
   pointer-events: none;
 }
 
-#play-btn {
+.action-btns {
   position: fixed;
   bottom: 12rem;
-  left: calc((100% - 12rem) / 2);
+  left: calc((100% - 24rem) / 2);
 
+  display: flex;
+}
+
+#play-btn,
+#pass-btn {
   width: 12rem;
   height: 3rem;
 
@@ -58,12 +62,16 @@
   cursor: pointer;
 }
 
+#pass-btn {
+  background-color: gray;
+}
+
 #player-name {
   position: fixed;
   bottom: 12rem;
   left: calc((100% - 80rem) / 2);
 
-  width: 30rem;
+  width: 24rem;
   height: 3rem;
 
   font-family: cursive;
