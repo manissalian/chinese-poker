@@ -64,6 +64,8 @@ class Round {
   }
 
   playHand (player, hand, cb) {
+    if (this.status === 'complete') return
+
     console.log('selected hand is: ', hand)
 
     const cards = hand.getCards()
@@ -135,6 +137,8 @@ class Round {
   }
 
   pass (player) {
+    if (this.status === 'complete') return
+
     if (player.id !== this.playerTurn) {
       console.log('not player ' + player.id + ' turn')
       return
@@ -172,7 +176,7 @@ class Round {
       const cardsCount = player.getCards().length
       const playerScore = cardsCount * (cardsCount > 10 ? 3 : cardsCount > 5 ? 2 : 1)
 
-      player.setScore(playerScore)
+      player.setScore(player.getScore() + playerScore)
     }
   }
 }

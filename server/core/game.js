@@ -61,6 +61,9 @@ class Game {
     const roundId = currentRound ? currentRound.getId() + 1 : 1
     const round = new Round(roundId, this)
     this.rounds.push(round)
+
+    this.players.map(player => player.resetCards())
+
     round.deal()
 
     if (cb) {

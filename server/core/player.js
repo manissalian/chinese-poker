@@ -10,6 +10,10 @@ class Player {
     return this.id
   }
 
+  getScore () {
+    return this.score
+  }
+
   getCards () {
     return this.cards
   }
@@ -33,6 +37,10 @@ class Player {
   removeCard (card) {
     const cardIndex = this.cards.indexOf(card)
     this.cards.splice(cardIndex, 1)
+  }
+
+  resetCards () {
+    this.cards = []
   }
 }
 

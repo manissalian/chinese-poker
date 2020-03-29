@@ -100,6 +100,19 @@ body {
   pointer-events: none;
 }
 
+#announcement {
+  position: fixed;
+  top: 14rem;
+  left: calc((100% - 40rem)/2);
+
+  width: 40rem;
+
+  font-family: fantasy;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
 #opponent-deck-1,
 #opponent-deck-2,
 #opponent-deck-3 {
@@ -228,6 +241,36 @@ body {
 #opponent-turn-3 {
   left: 8rem;
   top: 28rem;
+}
+
+#player-score,
+#opponent-score-1,
+#opponent-score-2,
+#opponent-score-3 {
+  position: fixed;
+
+  font-family: monospace;
+  font-size: 1.5rem;
+}
+
+#player-score {
+  bottom: 11.5rem;
+  right: calc((100% - 78rem) / 2);
+}
+
+#opponent-score-1 {
+  top: 8rem;
+  right: 6rem;
+}
+
+#opponent-score-2 {
+  top: 8rem;
+  right: 18rem;
+}
+
+#opponent-score-3 {
+  top: 8rem;
+  left: 6rem;
 }
 
 .display-none {

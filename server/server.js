@@ -18,6 +18,17 @@ http.listen(3000, () => {
 let gameId = 0
 
 const game = new Game(++gameId)
+
+const startNextRound = () => {
+  game.startNextRound(() => {
+    // remove cards/opponent_cards before sending
+    io.emit('roundStarted', game.getPlayers())
+
+    const currentRound = game.getCurrentRound()
+    io.emit('playerTurn', currentRound.getPlayerTurn())
+  })
+}
+
 io.on('connection', socket => {
   socket.on('join', name => {
     if (game.playerRegisteredToServer(game, name)) {
@@ -28,13 +39,7 @@ io.on('connection', socket => {
       player.registerToServer(player, name, socket.id)
       socket.emit('joined', player)
 
-      game.startNextRound(() => {
-        // remove cards/opponent_cards before sending
-        io.emit('gameStarted', game.getPlayers())
-
-        const currentRound = game.getCurrentRound()
-        io.emit('playerTurn', currentRound.getPlayerTurn())
-      })
+      startNextRound()
     })
   })
 
@@ -66,7 +71,18 @@ io.on('connection', socket => {
         playerId: player.id
       })
 
-      io.emit('playerTurn', currentRound.getPlayerTurn())
+      if (currentRound.getStatus() === 'complete') {
+        io.emit('roundComplete', currentRound.getWinner())
+        currentRound.setScores()
+
+        if (game.isComplete()) {
+          // broadcast game finished
+        } else {
+          setTimeout(() => startNextRound(), 5000)
+        }
+      } else {
+        io.emit('playerTurn', currentRound.getPlayerTurn())
+      }
     })
   })
 
