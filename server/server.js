@@ -31,6 +31,9 @@ io.on('connection', socket => {
       game.startNextRound(() => {
         // remove cards/opponent_cards before sending
         io.emit('gameStarted', game.getPlayers())
+
+        const currentRound = game.getCurrentRound()
+        io.emit('playerTurn', currentRound.getPlayerTurn())
       })
     })
   })
@@ -62,6 +65,8 @@ io.on('connection', socket => {
         cards: hand.getCards(),
         playerId: player.id
       })
+
+      io.emit('playerTurn', currentRound.getPlayerTurn())
     })
   })
 
@@ -70,6 +75,8 @@ io.on('connection', socket => {
     const currentRound = game.getCurrentRound()
 
     currentRound.pass(player)
+
+    io.emit('playerTurn', currentRound.getPlayerTurn())
   })
 })
 

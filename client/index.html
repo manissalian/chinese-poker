@@ -12,6 +12,7 @@
 
       let player = null
       let selectedCards = []
+      let playerTurnId = null
 
       const join = () => {
         const name = document.getElementById('name-input').value
@@ -31,7 +32,7 @@
       socket.on('gameStarted', players => {
         player = players.find(p => p.id === player.id)
 
-        const ownCards = document.getElementById('own-cards')
+        const playerDeck = document.getElementById('player-deck')
         for (let i in player.cards) {
           const card = player.cards[i]
 
@@ -51,7 +52,7 @@
           cardImageElement.setAttribute('draggable', false)
           cardElement.appendChild(cardImageElement)
 
-          ownCards.appendChild(cardElement)
+          playerDeck.appendChild(cardElement)
         }
 
         document.getElementById('player-name').innerHTML = player.name
@@ -67,6 +68,14 @@
         opponentDeck1.setAttribute('player-id', opponentId1)
         opponentDeck2.setAttribute('player-id', opponentId2)
         opponentDeck3.setAttribute('player-id', opponentId3)
+
+        const opponentTurn1 = document.getElementById('opponent-turn-1')
+        const opponentTurn2 = document.getElementById('opponent-turn-2')
+        const opponentTurn3 = document.getElementById('opponent-turn-3')
+
+        opponentTurn1.setAttribute('player-id', opponentId1)
+        opponentTurn2.setAttribute('player-id', opponentId2)
+        opponentTurn3.setAttribute('player-id', opponentId3)
 
         for (let i = 0; i < 13 ; i += 1) {
           const opponent1Card = document.createElement('img')
@@ -131,15 +140,33 @@
             player.cards.splice(cardIndex, 1)
 
             const cardElement = document.getElementById(card.category + card.value)
-            const ownCards = document.getElementById('own-cards')
-            ownCards.removeChild(cardElement)
+            const playerDeck = document.getElementById('player-deck')
+            playerDeck.removeChild(cardElement)
           })
         } else {
-          const opponentDeck = document.querySelector("div[player-id='" + playerId + "']")
+          const opponentDeck = document.querySelector(".deck[player-id='" + playerId + "']")
           cards.map(card => {
             opponentDeck.removeChild(opponentDeck.childNodes[0])
           })
         }
+      })
+
+      socket.on('playerTurn', playerId => {
+        const getTurnElement = () => {
+          if (playerTurnId == player.id) {
+            return document.getElementById('player-turn')
+          }
+
+          return document.querySelector(".turn[player-id='" + playerTurnId + "']")
+        }
+
+        if (playerTurnId) {
+          getTurnElement().classList.add('display-none')
+        }
+
+        playerTurnId = playerId
+
+        getTurnElement().classList.remove('display-none')
       })
     </script>
 
@@ -149,21 +176,25 @@
     <input id="name-input" type="text" placeholder="Enter your name">
     <button onclick="join()">Join</button>
 
-    <div id="own-cards"></div>
+    <div id="player-deck" class="deck"></div>
+    <div id="player-name"></div>
+    <div id="player-turn" class="turn display-none">T</div>
     <div class="action-btns">
       <div id="pass-btn" onclick="pass()">Pass</div>
       <div id="play-btn" onclick="playHand()">Play</div>
     </div>
-    <div id="player-name"></div>
 
-    <div id="opponent-deck-1"></div>
+    <div id="opponent-deck-1" class="deck"></div>
     <div id="opponent-name-1"></div>
+    <div id="opponent-turn-1" class="turn display-none">T</div>
 
-    <div id="opponent-deck-2"></div>
+    <div id="opponent-deck-2" class="deck"></div>
     <div id="opponent-name-2"></div>
+    <div id="opponent-turn-2" class="turn display-none">T</div>
 
-    <div id="opponent-deck-3"></div>
+    <div id="opponent-deck-3" class="deck"></div>
     <div id="opponent-name-3"></div>
+    <div id="opponent-turn-3" class="turn display-none">T</div>
 
     <div id="ground"></div>
 
