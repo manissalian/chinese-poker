@@ -56,35 +56,46 @@
 
         document.getElementById('player-name').innerHTML = player.name
 
-        const opponentDeck1 = document.getElementById('opponent-deck-1')
         const opponentId1 = player.id === 4 ? 1 : player.id + 1
-        opponentDeck1.setAttribute('player-id', opponentId1)
-        const opponentDeck2 = document.getElementById('opponent-deck-2')
         const opponentId2 = opponentId1 === 4 ? 1 : opponentId1 + 1
-        opponentDeck2.setAttribute('player-id', opponentId2)
-        const opponentDeck3 = document.getElementById('opponent-deck-3')
         const opponentId3 = opponentId2 === 4 ? 1 : opponentId2 + 1
+
+        const opponentDeck1 = document.getElementById('opponent-deck-1')
+        const opponentDeck2 = document.getElementById('opponent-deck-2')
+        const opponentDeck3 = document.getElementById('opponent-deck-3')
+
+        opponentDeck1.setAttribute('player-id', opponentId1)
+        opponentDeck2.setAttribute('player-id', opponentId2)
         opponentDeck3.setAttribute('player-id', opponentId3)
 
         for (let i = 0; i < 13 ; i += 1) {
           const opponent1Card = document.createElement('img')
+          const opponent2Card = document.createElement('img')
+          const opponent3Card = document.createElement('img')
+
           opponent1Card.classList.add('opponent1-card')
           opponent1Card.src = 'assets/cards/cardback.jpg'
           opponent1Card.setAttribute('draggable', false)
           opponentDeck1.appendChild(opponent1Card)
 
-          const opponent2Card = document.createElement('img')
           opponent2Card.classList.add('opponent2-card')
           opponent2Card.src = 'assets/cards/cardback.jpg'
           opponent2Card.setAttribute('draggable', false)
           opponentDeck2.appendChild(opponent2Card)
 
-          const opponent3Card = document.createElement('img')
           opponent3Card.classList.add('opponent3-card')
           opponent3Card.src = 'assets/cards/cardback.jpg'
           opponent3Card.setAttribute('draggable', false)
           opponentDeck3.appendChild(opponent3Card)
         }
+
+        const opponentName1 = document.getElementById('opponent-name-1')
+        const opponentName2 = document.getElementById('opponent-name-2')
+        const opponentName3 = document.getElementById('opponent-name-3')
+
+        opponentName1.innerHTML = players.find(p => p.id === opponentId1).name
+        opponentName2.innerHTML = players.find(p => p.id === opponentId2).name
+        opponentName3.innerHTML = players.find(p => p.id === opponentId3).name
       })
 
       socket.on('handPlayed', data => {
@@ -146,10 +157,13 @@
     <div id="player-name"></div>
 
     <div id="opponent-deck-1"></div>
+    <div id="opponent-name-1"></div>
 
     <div id="opponent-deck-2"></div>
+    <div id="opponent-name-2"></div>
 
     <div id="opponent-deck-3"></div>
+    <div id="opponent-name-3"></div>
 
     <div id="ground"></div>
 

@@ -71,15 +71,14 @@ body {
 
 #player-name {
   position: fixed;
-  bottom: 11.5rem;
+  bottom: 10rem;
   left: calc((100% - 78rem) / 2);
 
   width: 24rem;
-  height: 3rem;
 
-  font-family: cursive;
-  font-size: 2rem;
-  line-height: 3rem;
+  font-family: fantasy;
+  font-weight: bold;
+  font-size: 1.5rem;
   text-decoration: underline;
 
   white-space: nowrap;
@@ -156,4 +155,36 @@ body {
   margin: 0rem 0.2rem;
 
   width: 3.75rem;
+}
+
+#opponent-name-1,
+#opponent-name-2,
+#opponent-name-3 {
+  position: fixed;
+
+  min-width: 5rem;
+  max-width: 12rem;
+
+  font-family: fantasy;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-decoration: underline;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#opponent-name-1 {
+  right: 0.5rem;
+  top: 4.8rem;
+}
+
+#opponent-name-2 {
+  left: calc((100% - 54rem) / 2); /* same as deck-2 */
+  top: 7.5rem;
+}
+
+#opponent-name-3 {
+  top: 4.8rem;
 }
