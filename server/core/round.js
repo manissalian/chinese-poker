@@ -88,20 +88,6 @@ class Round {
       }
 
       this.firstTurn = false
-
-      cards.map(card => {
-        player.removeCard(card)
-      })
-
-      this.currentHand = hand
-
-      this.determinePlayerTurn()
-
-      if (cb) {
-        cb() 
-      }
-
-      return
     }
 
     if (this.currentHand && hand.getSize() !== this.currentHand.getSize() && this.passes < 3) {
