@@ -122,6 +122,10 @@
         opponentScore1.innerHTML = 'Score: ' + players.find(p => p.id === opponentId1).score
         opponentScore2.innerHTML = 'Score: ' + players.find(p => p.id === opponentId2).score
         opponentScore3.innerHTML = 'Score: ' + players.find(p => p.id === opponentId3).score
+
+        const ground = document.getElementById('ground')
+
+        while (ground.firstChild) ground.removeChild(ground.firstChild)
       })
 
       socket.on('handPlayed', data => {
@@ -194,6 +198,12 @@
         setTimeout(() => {
           announcement.classList.add('display-none')
         }, 5000)
+      })
+
+      socket.on('gameComplete', winner => {
+        const announcement = document.getElementById('announcement')
+        announcement.innerHTML = winner.name + ' wins the game!!!'
+        announcement.classList.remove('display-none')
       })
     </script>
 

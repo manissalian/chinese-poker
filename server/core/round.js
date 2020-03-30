@@ -11,6 +11,7 @@ class Round {
     this.passes = 0
     this.status = 'inProgress'
     this.winner = null
+    this.firstTurn = true
   }
 
   getId () {
@@ -80,11 +81,13 @@ class Round {
       return
     }
 
-    if (this.isFirstTurn()) {
+    if (this.firstTurn && this.isFirstRound()) {
       if (!cards.find(card => card.getCategory() === 'D' && card.getValue() === 1)) {
         console.log('hand must contain weakest card in first turn') 
         return
       }
+
+      this.firstTurn = false
 
       cards.map(card => {
         player.removeCard(card)
@@ -101,12 +104,12 @@ class Round {
       return
     }
 
-    if (hand.getSize() !== this.currentHand.getSize() && this.passes < 3) {
+    if (this.currentHand && hand.getSize() !== this.currentHand.getSize() && this.passes < 3) {
       console.log('invalid hand type')
       return
     }
 
-    if (hand.getScore() <= this.currentHand.getScore() && this.passes < 3) {
+    if (this.currentHand && hand.getScore() <= this.currentHand.getScore() && this.passes < 3) {
       console.log('hand score must be higher than the current hand score')
       return
     }

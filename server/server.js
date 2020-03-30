@@ -72,12 +72,11 @@ io.on('connection', socket => {
       })
 
       if (currentRound.getStatus() === 'complete') {
-        io.emit('roundComplete', currentRound.getWinner())
-        currentRound.setScores()
-
         if (game.isComplete()) {
-          // broadcast game finished
+          io.emit('gameComplete', game.getBestPlayer())
         } else {
+          io.emit('roundComplete', currentRound.getWinner())
+
           setTimeout(() => startNextRound(), 5000)
         }
       } else {
