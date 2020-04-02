@@ -1,3 +1,31 @@
+html {
+  font-size: 10px;
+}
+
+@media only screen and (min-width: 1280px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media only screen and (min-width: 1536px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media only screen and (min-width: 1680px) {
+  html {
+    font-size: 16px;
+  }
+}
+
 body {
   margin: 0.5rem;
 
