@@ -1,5 +1,7 @@
-const app = require('express')()
+const express = require('express')
+const app = express()
 const http = require('http').createServer(app)
+const port = process.env.PORT != null && process.env.PORT != '' ? process.env.PORT : 3000
 const io = require('socket.io')(http, {
   pingTimeout: 600 * 1000
 })
@@ -10,8 +12,14 @@ const Hand = require('./core/hand/hand')
 
 // app.use(cors())
 
-http.listen(3000, () => {
-  console.log('listening on port 3000')
+app.use(express.static(__dirname + '/client'))
+
+app.get('/', (req, res) => {
+  res.sendFile('index.html')
+})
+
+http.listen(port, () => {
+  console.log('listening on port: ' + port)
 })
 
 const ROOMS = 4
