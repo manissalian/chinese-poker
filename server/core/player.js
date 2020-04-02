@@ -1,6 +1,7 @@
 class Player {
-  constructor(id) {
+  constructor(id, name) {
     this.id = id
+    this.name = name
 
     this.score = 0
     this.cards = []
@@ -8,6 +9,10 @@ class Player {
 
   getId () {
     return this.id
+  }
+
+  getName () {
+    return this.name
   }
 
   getScore () {

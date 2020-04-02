@@ -16,12 +16,12 @@ class Game {
     }
   }
 
-  addPlayer (cb) {
+  addPlayer (name, cb) {
     const playersCount = this.players.length
 
     if (playersCount >= 4) return
 
-    const player = new Player(playersCount + 1)
+    const player = new Player(playersCount + 1, name)
     this.players.push(player)
 
     if (cb) {
@@ -69,6 +69,10 @@ class Game {
     if (cb) {
       cb()
     }
+  }
+
+  isStarted () {
+    return this.rounds.length
   }
 
   isComplete () {

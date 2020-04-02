@@ -2,6 +2,41 @@ body {
   margin: 0.5rem;
 
   background-color: silver;
+
+  font-family: fantasy;
+}
+
+#login {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+  position: fixed;
+  left: calc((100% - 20rem) / 2);
+  top: calc((100% - 20rem) / 2);
+
+  width: 20rem;
+  height: 20rem;
+
+  font-size: 1.25rem;
+}
+
+#name-input {
+  margin-bottom: 0.75rem;
+}
+
+#name-input,
+#login-btn {
+  font-size: 1rem;
+}
+
+#rooms {
+  display: flex;
+}
+
+.room {
+  margin-right: 4rem;
 }
 
 #player-deck {
@@ -76,7 +111,6 @@ body {
 
   width: 24rem;
 
-  font-family: fantasy;
   font-weight: bold;
   font-size: 1.5rem;
   text-decoration: underline;
@@ -107,7 +141,6 @@ body {
 
   width: 40rem;
 
-  font-family: fantasy;
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
@@ -178,7 +211,6 @@ body {
   min-width: 5rem;
   max-width: 12rem;
 
-  font-family: fantasy;
   font-weight: bold;
   font-size: 1.2rem;
   text-decoration: underline;
@@ -274,5 +306,5 @@ body {
 }
 
 .display-none {
-  display: none;
+  display: none !important;
 }

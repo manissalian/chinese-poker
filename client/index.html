@@ -10,27 +10,150 @@
       const host = 'http://localhost:3000'
       const socket = io(host)
 
+      let playerName = null
+      let roomId = null
+
       let player = null
       let selectedCards = []
       let playerTurnId = null
 
-      const join = () => {
-        const name = document.getElementById('name-input').value
+      const login = () => {
+        const nameValue = document.getElementById('name-input').value
 
-        if (!name) {
-          alert('enter name before you join')
+        if (!nameValue) {
+          alert('Enter a name before you join.')
           return
         }
 
-        socket.emit('join', name)
+        playerName = nameValue
+        socket.emit('login', playerName)
       }
 
-      socket.on('joined', playerInfo => {
-        player = playerInfo
+      const quit = () => {
+        socket.emit('quit', roomId)
+
+        const roomElement = document.getElementById('room')
+        roomElement.classList.add('display-none')
+
+        const lobbyElement = document.getElementById('lobby')
+        lobbyElement.classList.remove('display-none')
+      }
+
+      socket.on('requireLogin', () => {
+        const loginElement = document.getElementById('login')
+        loginElement.classList.remove('display-none')
       })
 
+      socket.on('uniqueLoginError', () => {
+        alert('A user with that name is already connected, choose another.')
+      })
+
+      socket.on('passToLobby', rooms => {
+        const loginElement = document.getElementById('login')
+        loginElement.classList.add('display-none')
+
+        const lobbyElement = document.getElementById('lobby')
+        lobbyElement.classList.remove('display-none')
+
+        rooms.map(room => {
+          const roomsElement = document.getElementById('rooms')
+
+          const roomElement = document.createElement('div')
+          roomElement.classList.add('room')
+
+          const titleElement = document.createElement('div')
+          titleElement.innerHTML = 'Room #' + room.id
+          roomElement.appendChild(titleElement)
+
+          const listElement = document.createElement('ol')
+          listElement.setAttribute('id', room.id)
+          room.users.map(user => {
+            const userElement = document.createElement('li')
+            userElement.setAttribute('name', user.name)
+            userElement.innerHTML = user.name
+            listElement.appendChild(userElement)
+          })
+          roomElement.appendChild(listElement)
+
+          const buttonElement = document.createElement('button')
+          buttonElement.innerHTML = 'Join'
+          buttonElement.addEventListener('click', () => {
+            socket.emit('joinRoom', {
+              roomId: room.id,
+              name: playerName
+            })
+          })
+          roomElement.appendChild(buttonElement)
+
+          roomsElement.appendChild(roomElement)
+        })
+      })
+
+      socket.on('userJoinedRoomUpdateLobby', data => {
+        if (!playerName) return
+
+        const {
+          roomId,
+          name
+        } = data
+
+        const listElement = document.querySelector("ol[id='" + roomId + "']")
+        const userElement = document.createElement('li')
+        userElement.setAttribute('name', name)
+        userElement.innerHTML = name
+        listElement.appendChild(userElement)
+      })
+
+      socket.on('userQuitUpdateLobby', data => {
+        if (!playerName) return
+
+        const {
+          roomId,
+          name
+        } = data
+
+        const listElement = document.querySelector("ol[id='" + roomId + "']")
+        const userElement = document.querySelector("li[name='" + name + "']")
+        if (userElement) {
+          listElement.removeChild(userElement)
+        }
+      })
+
+      socket.on('joinedRoom', _roomId => {
+        roomId = _roomId
+
+        const loginElement = document.getElementById('login')
+        loginElement.classList.add('display-none')
+
+        const lobbyElement = document.getElementById('lobby')
+        lobbyElement.classList.add('display-none')
+
+        const roomElement = document.getElementById('room')
+        roomElement.classList.remove('display-none')
+
+        document.getElementById('player-name').innerHTML = playerName
+      })
+
+      socket.on('gameReset', data => {
+        const {
+          roomId,
+          name
+        } = data
+
+        if (name) {
+          const announcement = document.getElementById('announcement')
+          announcement.innerHTML = name + ' has quit. The game ends.'
+          announcement.classList.remove('display-none')
+        }
+
+        const listElement = document.querySelector("ol[id='" + roomId + "']")
+        while (listElement.firstChild) listElement.removeChild(listElement.firstChild)
+      })
+
+      // gameroom / gameplay
+
       socket.on('roundStarted', players => {
-        player = players.find(p => p.id === player.id)
+        player = players.find(p => p.name === playerName)
 
         const playerDeck = document.getElementById('player-deck')
 
@@ -57,8 +180,6 @@
 
           playerDeck.appendChild(cardElement)
         }
-
-        document.getElementById('player-name').innerHTML = player.name
 
         document.getElementById('player-score').innerHTML = 'Score: ' + player.score
 
@@ -210,36 +331,49 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <input id="name-input" type="text" placeholder="Enter your name">
-    <button onclick="join()">Join</button>
-
-    <div id="player-deck" class="deck"></div>
-    <div id="player-name"></div>
-    <div id="player-turn" class="turn display-none">T</div>
-    <div id="player-score"></div>
-    <div class="action-btns">
-      <div id="pass-btn" onclick="pass()">Pass</div>
-      <div id="play-btn" onclick="playHand()">Play</div>
+    <div id="login" class="display-none">
+      <input id="name-input" type="text" placeholder="Enter your name">
+      <button id="login-btn" onclick="login()">Join</button>
     </div>
 
-    <div id="opponent-deck-1" class="deck"></div>
-    <div id="opponent-name-1"></div>
-    <div id="opponent-turn-1" class="turn display-none">T</div>
-    <div id="opponent-score-1"></div>
+    <div id="lobby" class="display-none">
+      <h1>Chinese Poker</h1>
+      <h2>Welcome to the lobby!</h2>
+      <h3>Join a room to start playing! The game will start when 4 players join in the room.</h3>
+      <div id="rooms"></div>
+    </div>
 
-    <div id="opponent-deck-2" class="deck"></div>
-    <div id="opponent-name-2"></div>
-    <div id="opponent-turn-2" class="turn display-none">T</div>
-    <div id="opponent-score-2"></div>
+    <div id="room" class="display-none">
+      <div id="player-deck" class="deck"></div>
+      <div id="player-name"></div>
+      <div id="player-turn" class="turn display-none">T</div>
+      <div id="player-score"></div>
+      <div class="action-btns">
+        <div id="pass-btn" onclick="pass()">Pass</div>
+        <div id="play-btn" onclick="playHand()">Play</div>
+      </div>
 
-    <div id="opponent-deck-3" class="deck"></div>
-    <div id="opponent-name-3"></div>
-    <div id="opponent-turn-3" class="turn display-none">T</div>
-    <div id="opponent-score-3"></div>
+      <div id="opponent-deck-1" class="deck"></div>
+      <div id="opponent-name-1"></div>
+      <div id="opponent-turn-1" class="turn display-none">T</div>
+      <div id="opponent-score-1"></div>
 
-    <div id="ground"></div>
+      <div id="opponent-deck-2" class="deck"></div>
+      <div id="opponent-name-2"></div>
+      <div id="opponent-turn-2" class="turn display-none">T</div>
+      <div id="opponent-score-2"></div>
 
-    <div id="announcement" class="display-none"></div>
+      <div id="opponent-deck-3" class="deck"></div>
+      <div id="opponent-name-3"></div>
+      <div id="opponent-turn-3" class="turn display-none">T</div>
+      <div id="opponent-score-3"></div>
+
+      <div id="ground"></div>
+
+      <div id="announcement" class="display-none"></div>
+
+      <button id="quit" onclick="quit()">Quit Game</button>
+    </div>
 
     <script src="dragSwap.js"></script>
   </body>

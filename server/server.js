@@ -1,54 +1,128 @@
 const app = require('express')()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http, {
-  pingTimeout: 10000 * 1000
+  pingTimeout: 600 * 1000
 })
 const cors = require('cors')
 
-const Game = require('./extensions/game_server')
-const Player = require('./extensions/player_server')
+const Lobby = require('./lobby')
 const Hand = require('./core/hand/hand')
 
-const playerRoute = require('./routes/player.js')
+// app.use(cors())
 
 http.listen(3000, () => {
   console.log('listening on port 3000')
 })
 
-let gameId = 0
+const ROOMS = 4
 
-const game = new Game(++gameId)
-
-const startNextRound = () => {
-  game.startNextRound(() => {
-    // remove cards/opponent_cards before sending
-    io.emit('roundStarted', game.getPlayers())
-
-    const currentRound = game.getCurrentRound()
-    io.emit('playerTurn', currentRound.getPlayerTurn())
-  })
+const lobby = new Lobby()
+for (let i = 0; i < ROOMS; i += 1) {
+  lobby.addRoom()
 }
 
 io.on('connection', socket => {
-  socket.on('join', name => {
-    if (game.playerRegisteredToServer(game, name)) {
+  socket.emit('requireLogin')
+
+  socket.on('login', name => {
+    if (lobby.getUserByName(name)) {
+      socket.emit('uniqueLoginError')
       return
     }
 
-    game.addPlayer(player => {
-      player.registerToServer(player, name, socket.id)
-      socket.emit('joined', player)
+    lobby.addUser(socket.id, name)
 
-      startNextRound()
+    const rooms = lobby.getRooms()
+
+    let roomId = null
+    const inGameUser = rooms.find(room => {
+      roomId = room.id
+      return room.getUserByName(name)
+    })
+
+    if (inGameUser) {
+      socket.emit('joinedRoom', roomId)
+    } else {
+      socket.emit('passToLobby', lobby.getFilteredRooms())
+    }
+  })
+
+  socket.on('joinRoom', data => {
+    const {
+      roomId,
+      name
+    } = data
+
+    const room = lobby.getRoomById(roomId)
+    const user = lobby.getUserByName(name)
+
+    if (room.getUserByName(name)) return
+
+    if (room.getUsers().length === 4) return
+
+    room.addUser(user)
+
+    socket.emit('joinedRoom', roomId)
+    socket.broadcast.emit('userJoinedRoomUpdateLobby', {
+      roomId,
+      name
+    })
+
+    room.startGame(() => {
+      // remove cards/opponent_cards before sending
+      room.emitToUsers(io, 'roundStarted', room.getGame().getPlayers())
+
+      const currentRound = room.getGame().getCurrentRound()
+      room.emitToUsers(io, 'playerTurn', currentRound.getPlayerTurn())
+    })
+  })
+
+  socket.on('quit', roomId => {
+    const user = lobby.getUserBySocketId(socket.id)
+
+    if (!user) return
+
+    const room = lobby.getRoomById(roomId)
+    room.removeUser(user)
+
+    if (room.getGame().isStarted()) {
+      io.emit('gameReset', {
+        roomId: room.getId(),
+        name: user.name
+      })
+
+      room.resetGame()
+    }
+
+    socket.broadcast.emit('userQuitUpdateLobby', {
+      roomId,
+      name: user.name
     })
   })
 
   socket.on('disconnect', () => {
-    game.unregisterPlayerFromServer(game, socket.id)
+    const user = lobby.getUserBySocketId(socket.id)
+
+    if (!user) return
+
+    lobby.removeUser(user)
+
+    // if no more connected players found in room => reset room
+    const room = lobby.getRooms().find(room => room.getUserByName(user.name))
+    if (lobby.allRoomUsersDisconnected(room)) {
+      io.emit('gameReset', {
+        roomId: room.getId()
+      })
+
+      room.resetGame()
+    }
   })
+
+  // gameplay
 
   socket.on('play', data => {
     const {
+      roomId,
       playerId,
       cards
     } = data
@@ -58,6 +132,8 @@ io.on('connection', socket => {
       return
     }
 
+    const room = lobby.getRoomById(roomId)
+    const game = room.getGame()
     const player = game.getPlayerById(playerId)
     const selectedCards = cards.map(card => {
       return player.getCardByCategoryAndValue(card.category, card.value)
@@ -66,40 +142,44 @@ io.on('connection', socket => {
     const currentRound = game.getCurrentRound()
 
     currentRound.playHand(player, hand, () => {
-      io.emit('handPlayed', {
+      room.emitToUsers(io, 'handPlayed', {
         cards: hand.getCards(),
         playerId: player.id
       })
 
       if (currentRound.getStatus() === 'complete') {
         if (game.isComplete()) {
-          io.emit('gameComplete', game.getBestPlayer())
+          room.emitToUsers(io, 'gameComplete', game.getBestPlayer())
+
+          io.emit('gameReset', {
+            roomId: room.getId()
+          })
+
+          room.resetGame()
         } else {
-          io.emit('roundComplete', currentRound.getWinner())
+          room.emitToUsers(io, 'roundComplete', currentRound.getWinner())
 
           setTimeout(() => startNextRound(), 5000)
         }
       } else {
-        io.emit('playerTurn', currentRound.getPlayerTurn())
+        room.emitToUsers(io, 'playerTurn', currentRound.getPlayerTurn())
       }
     })
   })
 
-  socket.on('pass', playerId => {
+  socket.on('pass', data => {
+    const {
+      roomId,
+      playerId
+    } = data
+
+    const room = lobby.getRoomById(roomId)
+    const game = room.getGame()
     const player = game.getPlayerById(playerId)
     const currentRound = game.getCurrentRound()
 
     currentRound.pass(player)
 
-    io.emit('playerTurn', currentRound.getPlayerTurn())
+    room.emitToUsers(io, 'playerTurn', currentRound.getPlayerTurn())
   })
 })
-
-app.use(cors())
-
-const addGame = (req, res, next) => {
-  req.game = game
-  next()
-}
-
-app.get('/player/:id', addGame, playerRoute.getPlayer)
