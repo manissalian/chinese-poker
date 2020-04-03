@@ -76,6 +76,7 @@
           roomElement.appendChild(listElement)
 
           const buttonElement = document.createElement('button')
+          buttonElement.classList.add('join-room-btn')
           buttonElement.innerHTML = 'Join'
           buttonElement.addEventListener('click', () => {
             socket.emit('joinRoom', {
@@ -329,6 +330,7 @@
     </script>
 
     <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <div id="login" class="display-none">

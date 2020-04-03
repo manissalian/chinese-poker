@@ -1,5 +1,17 @@
 html {
-  font-size: 10px;
+  font-size: 5px;
+}
+
+@media only screen and (min-width: 640px) {
+  html {
+    font-size: 6px;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  html {
+    font-size: 10px;
+  }
 }
 
 @media only screen and (min-width: 1280px) {
@@ -65,6 +77,14 @@ body {
 
 .room {
   margin-right: 4rem;
+}
+
+.room ol {
+  padding-left: 1rem;
+}
+
+.join-room-btn {
+  font-size: 0.8rem;
 }
 
 #player-deck {

@@ -188,6 +188,8 @@ io.on('connection', socket => {
     const player = game.getPlayerById(playerId)
     const currentRound = game.getCurrentRound()
 
+    if (!currentRound) return
+
     currentRound.pass(player)
 
     room.emitToUsers(io, 'playerTurn', currentRound.getPlayerTurn())
