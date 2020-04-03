@@ -51,6 +51,8 @@ class Lobby {
   }
 
   allRoomUsersDisconnected (room) {
+    if (!room) return false
+
     for (let i in room.users) {
       const user = room.users[i]
 
