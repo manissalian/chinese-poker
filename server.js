@@ -149,6 +149,8 @@ io.on('connection', socket => {
     const hand = new Hand(selectedCards)
     const currentRound = game.getCurrentRound()
 
+    if (!currentRound) return
+
     currentRound.playHand(player, hand, () => {
       room.emitToUsers(io, 'handPlayed', {
         cards: hand.getCards(),
