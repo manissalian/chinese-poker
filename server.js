@@ -169,7 +169,7 @@ io.on('connection', socket => {
         } else {
           room.emitToUsers(io, 'roundComplete', currentRound.getWinner())
 
-          setTimeout(() => startNextRound(), 5000)
+          setTimeout(() => game.startNextRound(), 5000)
         }
       } else {
         room.emitToUsers(io, 'playerTurn', currentRound.getPlayerTurn())
