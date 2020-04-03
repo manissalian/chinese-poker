@@ -86,8 +86,6 @@ class Round {
         console.log('hand must contain weakest card in first turn') 
         return
       }
-
-      this.firstTurn = false
     }
 
     if (this.currentHand && hand.getSize() !== this.currentHand.getSize() && this.passes < 3) {
@@ -107,6 +105,8 @@ class Round {
     this.currentHand = hand
 
     this.passes = 0
+
+    this.firstTurn = false
 
     if (!player.getCards().length) {
       console.log(player.id + ' wins')
@@ -133,7 +133,7 @@ class Round {
       return
     }
 
-    if (this.isFirstTurn()) {
+    if (this.firstTurn) {
       console.log('cant pass during first turn') 
       return
     }
@@ -147,10 +147,6 @@ class Round {
     return this.game.getPlayers().find(player => {
       return player.getCards().find(card => card.getCategory() === 'D' && card.getValue() === 1)
     })
-  }
-
-  isFirstTurn () {
-    return this.weakestCardOwningPlayer() ? true : false
   }
 
   isFirstRound () {
