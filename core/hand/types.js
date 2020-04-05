@@ -4,13 +4,13 @@ const single = (cards) => {
 
 const pair = (cards) => {
   return cards.length === 2 &&
-          cards[0].getValue() === cards[1].getValue()
+          cards[0].hasValueOfCard(cards[1])
 }
 
 const threeOfAKind = (cards) => {
   return cards.length === 3 &&
-          cards[0].getValue() === cards[1].getValue() &&
-          cards[0].getValue() === cards[2].getValue()
+          cards[0].hasValueOfCard(cards[1]) &&
+          cards[0].hasValueOfCard(cards[2])
 }
 
 const straight = (cards) => {
@@ -28,10 +28,10 @@ const straight = (cards) => {
 const flush = (cards) => {
   if (cards.length !== 5) return false
 
-  return cards[0].getCategory() === cards[1].getCategory() &&
-          cards[0].getCategory() === cards[2].getCategory() &&
-          cards[0].getCategory() === cards[3].getCategory() &&
-          cards[0].getCategory() === cards[4].getCategory()
+  return cards[0].hasCategoryOfCard(cards[1]) &&
+          cards[0].hasCategoryOfCard(cards[2]) &&
+          cards[0].hasCategoryOfCard(cards[3]) &&
+          cards[0].hasCategoryOfCard(cards[4])
 }
 
 const fullHouse = (cards) => {
@@ -39,12 +39,10 @@ const fullHouse = (cards) => {
 
   const sortedCards = sortCards(cards)
 
-  if (sortedCards[0].getValue() === sortedCards[1].getValue() &&
-      sortedCards[0].getValue() === sortedCards[2].getValue()) {
-    return sortedCards[3].getValue() === sortedCards[4].getValue()
-  } else if (sortedCards[2].getValue() === sortedCards[3].getValue() &&
-              sortedCards[2].getValue() === sortedCards[4].getValue()) {
-    return sortedCards[0].getValue() === sortedCards[1].getValue()
+  if (threeOfAKind([sortedCards[0], sortedCards[1], sortedCards[2]])) {
+    return pair([sortedCards[3], sortedCards[4]])
+  } else if (threeOfAKind([sortedCards[2], sortedCards[3], sortedCards[4]])) {
+    return pair([sortedCards[0], sortedCards[1]])
   }
 
   return false
@@ -55,13 +53,11 @@ const fourOfAKind = (cards) => {
 
   const sortedCards = sortCards(cards)
 
-  if (sortedCards[0].getValue() === sortedCards[1].getValue() &&
-      sortedCards[0].getValue() === sortedCards[2].getValue() &&
-      sortedCards[0].getValue() === sortedCards[3].getValue()) {
+  if (threeOfAKind([sortedCards[0], sortedCards[1], sortedCards[2]]) &&
+      pair([sortedCards[0], sortedCards[3]])) {
     return true
-  } else if (sortedCards[1].getValue() === sortedCards[2].getValue() &&
-              sortedCards[1].getValue() === sortedCards[3].getValue() &&
-              sortedCards[1].getValue() === sortedCards[4].getValue()) {
+  } else if (threeOfAKind([sortedCards[1], sortedCards[2], sortedCards[3]]) &&
+      pair([sortedCards[1], sortedCards[4]])) {
     return true
   }
 

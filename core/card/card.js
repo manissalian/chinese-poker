@@ -23,6 +23,14 @@ class Card {
   getValue () {
     return this.value
   }
+
+  hasValueOfCard (card) {
+    return this.value === card.getValue()
+  }
+
+  hasCategoryOfCard (card) {
+    return this.category === card.getCategory()
+  }
 }
 
 module.exports = Card
