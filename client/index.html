@@ -7,7 +7,8 @@
     <script src="cardSelect.js"></script>
     <script src="actions.js"></script>
     <script>
-      const host = 'https://cpoker.herokuapp.com'
+      // const host = 'https://cpoker.herokuapp.com'
+      const host = 'http://localhost:3000'
       const socket = io(host)
 
       let playerName = null
@@ -303,7 +304,8 @@
 
         while (ground.firstChild) ground.removeChild(ground.firstChild)
 
-        // selectedCards = []
+        selectedCards = []
+      })
 
       socket.on('handPlayed', data => {
         const {
