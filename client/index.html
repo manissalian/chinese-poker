@@ -39,6 +39,58 @@
         lobbyElement.classList.remove('display-none')
       }
 
+      const resetRoomUI = () => {
+        const playerDeck = document.getElementById('player-deck')
+        const opponentDeck1 = document.getElementById('opponent-deck-1')
+        const opponentDeck2 = document.getElementById('opponent-deck-2')
+        const opponentDeck3 = document.getElementById('opponent-deck-3')
+
+        while (playerDeck.firstChild) playerDeck.removeChild(playerDeck.firstChild)
+        while (opponentDeck1.firstChild) opponentDeck1.removeChild(opponentDeck1.firstChild)
+        while (opponentDeck2.firstChild) opponentDeck2.removeChild(opponentDeck2.firstChild)
+        while (opponentDeck3.firstChild) opponentDeck3.removeChild(opponentDeck3.firstChild)
+
+        const playerName = document.getElementById('player-name')
+        const opponentName1 = document.getElementById('opponent-name-1')
+        const opponentName2 = document.getElementById('opponent-name-2')
+        const opponentName3 = document.getElementById('opponent-name-3')
+
+        playerName.innerHTML = ''
+        opponentName1.innerHTML = ''
+        opponentName2.innerHTML = ''
+        opponentName3.innerHTML = ''
+
+        const playerScore = document.getElementById('player-score')
+        const opponentScore1 = document.getElementById('opponent-score-1')
+        const opponentScore2 = document.getElementById('opponent-score-2')
+        const opponentScore3 = document.getElementById('opponent-score-3')
+
+        playerScore.innerHTML = ''
+        opponentScore1.innerHTML = ''
+        opponentScore2.innerHTML = ''
+        opponentScore3.innerHTML = ''
+
+        const ground = document.getElementById('ground')
+
+        while (ground.firstChild) ground.removeChild(ground.firstChild)
+
+        const announcement = document.getElementById('announcement')
+        announcement.innerHTML = ''
+
+        const turnElement = getTurnElement()
+        if (turnElement) turnElement.classList.add('display-none') 
+      }
+
+      const getTurnElement = () => {
+        if (!player) return
+
+        if (playerTurnId == player.id) {
+          return document.getElementById('player-turn')
+        }
+
+        return document.querySelector(".turn[player-id='" + playerTurnId + "']")
+      }
+
       socket.on('requireLogin', () => {
         const loginElement = document.getElementById('login')
         loginElement.classList.remove('display-none')
@@ -121,6 +173,8 @@
       })
 
       socket.on('joinedRoom', _roomId => {
+        resetRoomUI()
+
         roomId = _roomId
 
         const loginElement = document.getElementById('login')
@@ -248,7 +302,8 @@
         const ground = document.getElementById('ground')
 
         while (ground.firstChild) ground.removeChild(ground.firstChild)
-      })
+
+        // selectedCards = []
 
       socket.on('handPlayed', data => {
         const {
@@ -295,14 +350,6 @@
       })
 
       socket.on('playerTurn', playerId => {
-        const getTurnElement = () => {
-          if (playerTurnId == player.id) {
-            return document.getElementById('player-turn')
-          }
-
-          return document.querySelector(".turn[player-id='" + playerTurnId + "']")
-        }
-
         if (playerTurnId) {
           getTurnElement().classList.add('display-none')
         }
