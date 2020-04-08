@@ -159,7 +159,10 @@ io.on('connection', socket => {
 
       if (currentRound.getStatus() === 'complete') {
         if (game.isComplete()) {
-          room.emitToUsers(io, 'gameComplete', game.getBestPlayer())
+          room.emitToUsers(io, 'gameComplete', {
+            winner: game.getBestPlayer(),
+            players: game.getPlayers()
+          })
 
           io.emit('gameReset', {
             roomId: room.getId()
