@@ -413,6 +413,10 @@
         playerTurnId = playerId
 
         getTurnElement().classList.remove('display-none')
+
+        if (playerTurnId === player.id && !spectating) {
+          document.getElementById('turn-sound').play()
+        }
       })
 
       socket.on('roundComplete', winner => {
@@ -492,6 +496,8 @@
 
       <button id="quit" onclick="quit()">Quit Game</button>
     </div>
+
+    <audio id="turn-sound" src="assets/turn.mp3"></audio>
 
     <script src="dragSwap.js"></script>
   </body>
