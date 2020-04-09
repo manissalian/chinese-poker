@@ -14,10 +14,6 @@ const Hand = require('./core/hand/hand')
 
 app.use(express.static(__dirname + '/client'))
 
-app.get('/', (req, res) => {
-  res.sendFile('index.html')
-})
-
 http.listen(port, () => {
   console.log('listening on port: ' + port)
 })
@@ -83,6 +79,20 @@ io.on('connection', socket => {
       const currentRound = room.getGame().getCurrentRound()
       room.emitToUsers(io, 'playerTurn', currentRound.getPlayerTurn())
     })
+  })
+
+  socket.on('spectateRoom', data => {
+    const {
+      roomId,
+      name
+    } = data
+
+    const room = lobby.getRoomById(roomId)
+    const user = lobby.getUserByName(name)
+
+    room.addSpectator(user)
+
+    socket.emit('spectatingRoom', room.getGame().getPlayers())
   })
 
   socket.on('quit', roomId => {

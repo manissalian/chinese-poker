@@ -5,6 +5,7 @@ class Room {
     this.id = id
 
     this.users = []
+    this.spectators = []
     this.game = new Game()
   }
 
@@ -20,6 +21,10 @@ class Room {
     return this.users.find(user => user.name === name)
   }
 
+  getSpectators () {
+    return this.spectators
+  }
+
   getGame () {
     return this.game
   }
@@ -31,6 +36,15 @@ class Room {
   removeUser (user) {
     const userIndex = this.users.indexOf(user)
     this.users.splice(userIndex, 1)
+  }
+
+  addSpectator (spectator) {
+    this.spectators.push(spectator)
+  }
+
+  removeSpectator () {
+    const spectatorIndex = this.spectators.indexOf(spectator)
+    this.spectator.splice(spectatorIndex, 1)
   }
 
   startGame (cb) {
@@ -55,7 +69,18 @@ class Room {
   emitToUsers (io, event, params) {
     this.users.map(user => {
       const userSocket = io.of('/').connected[user.getSocketId()]
+
+      if (!userSocket) return
+
       userSocket.emit(event, params)
+    })
+
+    this.spectators.map(spectator => {
+      const spectatorSocket = io.of('/').connected[spectator.getSocketId()]
+
+      if (!spectatorSocket) return
+
+      spectatorSocket.emit(event, params)
     })
   }
 }

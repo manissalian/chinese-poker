@@ -124,7 +124,7 @@ body {
   pointer-events: none;
 }
 
-.action-btns {
+#action-btns {
   display: flex;
 
   position: fixed;
