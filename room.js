@@ -42,9 +42,9 @@ class Room {
     this.spectators.push(spectator)
   }
 
-  removeSpectator () {
+  removeSpectator (spectator) {
     const spectatorIndex = this.spectators.indexOf(spectator)
-    this.spectator.splice(spectatorIndex, 1)
+    this.spectators.splice(spectatorIndex, 1)
   }
 
   startGame (cb) {

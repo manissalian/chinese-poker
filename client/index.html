@@ -2,10 +2,10 @@
   <head>
     <title>Chinese Poker</title>
     <script src="socket.io.js"></script>
-    <script src="fetch.js"></script>
     <script src="cardMap.js"></script>
     <script src="cardSelect.js"></script>
     <script src="actions.js"></script>
+    <script src="dragSwap.js"></script>
     <script>
       const host = location.host
       const socket = io(host)
@@ -32,7 +32,11 @@
       }
 
       const quit = () => {
-        socket.emit('quit', roomId)
+        if (spectating) {
+          socket.emit('quitSpectating', roomId)
+        } else {
+          socket.emit('quit', roomId)
+        }
 
         const roomElement = document.getElementById('room')
         roomElement.classList.add('display-none')
@@ -84,6 +88,10 @@
       }
 
       const renderUI = players => {
+        if (!players || !players.length) return
+
+        document.getElementById('player-name').innerHTML = spectating ? players[0].name : playerName
+
         const playerDeck = document.getElementById('player-deck')
 
         while (playerDeck.firstChild) playerDeck.removeChild(playerDeck.firstChild)
@@ -255,6 +263,7 @@
           spectateButtonElement.classList.add('spectate-room-btn')
           spectateButtonElement.innerHTML = 'Spectate'
           spectateButtonElement.addEventListener('click', () => {
+            roomId = room.id
             socket.emit('spectateRoom', {
               roomId: room.id,
               name: playerName
@@ -353,7 +362,7 @@
 
         player = players[0]
 
-        document.getElementById('player-name').innerHTML = player.name
+        document.getElementById('player-name').innerHTML = (player && player.name) || ''
 
         renderUI(players)
 
@@ -498,7 +507,5 @@
     </div>
 
     <audio id="turn-sound" src="assets/turn.mp3"></audio>
-
-    <script src="dragSwap.js"></script>
   </body>
 </html>

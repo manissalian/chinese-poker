@@ -118,6 +118,15 @@ io.on('connection', socket => {
     })
   })
 
+  socket.on('quitSpectating', roomId => {
+    const user = lobby.getUserBySocketId(socket.id)
+
+    if (!user) return
+
+    const room = lobby.getRoomById(roomId)
+    room.removeSpectator(user)
+  })
+
   socket.on('disconnect', () => {
     const user = lobby.getUserBySocketId(socket.id)
 
