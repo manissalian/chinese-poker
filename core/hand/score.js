@@ -78,9 +78,31 @@ module.exports = {
       }
     }
 
-    if (sortedCards.find(card => card.getCategory() === 'S')) return 4
-    if (sortedCards.find(card => card.getCategory() === 'H')) return 3
-    if (sortedCards.find(card => card.getCategory() === 'C')) return 2
-    if (sortedCards.find(card => card.getCategory() === 'D')) return 1
+    if (hand.type === 'fourOfAKind') {
+      if (sortedCards[0].getValue() === sortedCards[1].getValue() &&
+          sortedCards[0].getValue() === sortedCards[2].getValue() &&
+          sortedCards[0].getValue() === sortedCards[3].getValue()) {
+        sortedCards.splice(4, 1)
+      } else if (sortedCards[1].getValue() === sortedCards[2].getValue() &&
+                  sortedCards[1].getValue() === sortedCards[3].getValue() &&
+                  sortedCards[1].getValue() === sortedCards[4].getValue()) {
+        sortedCards.splice(0, 1)
+      }
+    }
+
+    if (hand.type === 'pair' ||
+        hand.type === 'threeOfAKind' ||
+        hand.type === 'fullHouse') {
+      if (sortedCards.find(card => card.getCategory() === 'S')) return 4
+      if (sortedCards.find(card => card.getCategory() === 'H')) return 3
+      if (sortedCards.find(card => card.getCategory() === 'C')) return 2
+      if (sortedCards.find(card => card.getCategory() === 'D')) return 1
+    }
+
+    const lastCardCategory = sortedCards[sortedCards.length - 1].getCategory()
+    if (lastCardCategory === 'S') return 4
+    if (lastCardCategory === 'H') return 3
+    if (lastCardCategory === 'C') return 2
+    if (lastCardCategory === 'D') return 1
   }
 }
