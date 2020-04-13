@@ -8,7 +8,9 @@
     <script src="dragSwap.js"></script>
     <script>
       const host = location.host
-      const socket = io(host)
+      const socket = io(host, {
+        transports: ['websocket']
+      })
 
       let playerName = null
       let roomId = null
