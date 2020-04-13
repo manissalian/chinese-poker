@@ -9,7 +9,7 @@
     <script>
       const host = location.host
       const socket = io(host, {
-        transports: ['websocket']
+        transports: ['polling']
       })
 
       let playerName = null
