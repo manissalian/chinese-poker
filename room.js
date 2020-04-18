@@ -33,6 +33,15 @@ class Room {
     this.users.push(user)
   }
 
+  updateUser (user) {
+    this.users = this.users.map(u => {
+      if (user.name === u.name) {
+        return user
+      }
+      return u
+    })
+  }
+
   removeUser (user) {
     const userIndex = this.users.indexOf(user)
     this.users.splice(userIndex, 1)

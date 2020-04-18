@@ -1,6 +1,6 @@
 const playHand = () => {
   socket.emit('play', {
-    roomId,
+    roomId: _roomId,
     playerId: player.id,
     cards: selectedCards
   })
@@ -8,7 +8,7 @@ const playHand = () => {
 
 const pass = () => {
   socket.emit('pass', {
-    roomId,
+    roomId: _roomId,
     playerId: player.id
   })
 }

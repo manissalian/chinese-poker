@@ -1,4 +1,4 @@
-let roomId = null
+let _roomId = null
 let spectating = false
 
 let player = null
@@ -161,9 +161,9 @@ const getTurnElement = () => {
 
 const quit = () => {
   if (spectating) {
-    socket.emit('quitSpectating', roomId)
+    socket.emit('quitSpectating', _roomId)
   } else {
-    socket.emit('quit', roomId)
+    socket.emit('quit', _roomId)
   }
 
   const roomElement = document.getElementById('room')
@@ -173,10 +173,15 @@ const quit = () => {
   lobbyElement.classList.remove('display-none')
 }
 
-socket.on('joinedRoom', _roomId => {
+socket.on('joinedRoom', data => {
+  const {
+    roomId,
+    players
+  } = data
+
   resetRoomUI()
 
-  roomId = _roomId
+  _roomId = roomId
 
   const loginElement = document.getElementById('login')
   loginElement.classList.add('display-none')
@@ -188,11 +193,15 @@ socket.on('joinedRoom', _roomId => {
   roomElement.classList.remove('display-none')
 
   document.getElementById('player-name').innerHTML = playerName
+
+  if (players) {
+    player = players.find(p => p.name === playerName)
+    renderUI(players)
+  }
 })
 
 socket.on('gameReset', data => {
   const {
-    roomId,
     name
   } = data
 
@@ -201,9 +210,6 @@ socket.on('gameReset', data => {
     announcement.innerHTML = name + ' has quit. The game ends.'
     announcement.classList.remove('display-none')
   }
-
-  const listElement = document.querySelector("ol[id='" + roomId + "']")
-  while (listElement.firstChild) listElement.removeChild(listElement.firstChild)
 })
 
 // gameroom / gameplay

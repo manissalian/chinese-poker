@@ -9,6 +9,7 @@ const cors = require('cors')
 
 const Lobby = require('./lobby')
 const Hand = require('./core/hand/hand')
+const User = require('./user')
 
 // app.use(cors())
 
@@ -45,7 +46,18 @@ io.on('connection', socket => {
     })
 
     if (inGameUser) {
-      socket.emit('joinedRoom', roomId)
+      const room = lobby.getRoomById(roomId)
+      const user = new User(socket.id, name)
+      const game = room.getGame()
+
+      room.updateUser(user)
+
+      socket.emit('joinedRoom', {
+        roomId,
+        players: game.getPlayers()
+      })
+
+      socket.emit('playerTurn', game.getCurrentRound().getPlayerTurn())
     } else {
       socket.emit('passToLobby', lobby.getFilteredRooms())
     }
@@ -66,7 +78,9 @@ io.on('connection', socket => {
 
     room.addUser(user)
 
-    socket.emit('joinedRoom', roomId)
+    socket.emit('joinedRoom', {
+      roomId
+    })
     socket.broadcast.emit('userJoinedRoomUpdateLobby', {
       roomId,
       name

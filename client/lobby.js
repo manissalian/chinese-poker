@@ -81,3 +81,12 @@ socket.on('userQuitUpdateLobby', data => {
     listElement.removeChild(userElement)
   }
 })
+
+socket.on('gameReset', data => {
+  const {
+    roomId
+  } = data
+
+  const listElement = document.querySelector("ol[id='" + roomId + "']")
+  while (listElement.firstChild) listElement.removeChild(listElement.firstChild)
+})
