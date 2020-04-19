@@ -38,6 +38,16 @@ class Game {
     return this.players
   }
 
+  getFilteredPlayers (name) {
+    return this.players.map(player => {
+      if (name && player.name === name) {
+        return player
+      }
+
+      return player.getWithHiddenCards()
+    })
+  }
+
   getPreviousRound () {
     return this.rounds[this.rounds.length - 2]
   }

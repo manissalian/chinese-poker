@@ -54,7 +54,7 @@ io.on('connection', socket => {
 
       socket.emit('joinedRoom', {
         roomId,
-        players: game.getPlayers()
+        players: game.getFilteredPlayers(name)
       })
 
       socket.emit('playerTurn', game.getCurrentRound().getPlayerTurn())
@@ -88,7 +88,10 @@ io.on('connection', socket => {
 
     room.startGame(() => {
       // remove cards/opponent_cards before sending
-      room.emitToUsers(io, 'roundStarted', room.getGame().getPlayers())
+      room.getUsers().map(u => {
+        const userSocket = io.of('/').connected[u.getSocketId()]
+        userSocket.emit('roundStarted', room.getGame().getFilteredPlayers(u.name))
+      })
 
       const currentRound = room.getGame().getCurrentRound()
       room.emitToUsers(io, 'playerTurn', currentRound.getPlayerTurn())
@@ -106,7 +109,7 @@ io.on('connection', socket => {
 
     room.addSpectator(user)
 
-    socket.emit('spectatingRoom', room.getGame().getPlayers())
+    socket.emit('spectatingRoom', room.getGame().getFilteredPlayers())
   })
 
   socket.on('quit', roomId => {
@@ -206,7 +209,10 @@ io.on('connection', socket => {
           room.emitToUsers(io, 'roundComplete', currentRound.getWinner())
 
           setTimeout(() => game.startNextRound(() => {
-            room.emitToUsers(io, 'roundStarted', room.getGame().getPlayers())
+            room.getUsers().map(u => {
+              const userSocket = io.of('/').connected[u.getSocketId()]
+              userSocket.emit('roundStarted', room.getGame().getFilteredPlayers(u.name))
+            })
 
             const currentRound = room.getGame().getCurrentRound()
             room.emitToUsers(io, 'playerTurn', currentRound.getPlayerTurn())

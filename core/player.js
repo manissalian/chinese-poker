@@ -47,6 +47,13 @@ class Player {
   resetCards () {
     this.cards = []
   }
+
+  getWithHiddenCards () {
+    const playerWithHiddenCards = Object.assign({}, this)
+    playerWithHiddenCards.cards = playerWithHiddenCards.cards.map(card => 0)
+
+    return playerWithHiddenCards
+  }
 }
 
 module.exports = Player
