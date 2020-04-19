@@ -151,6 +151,21 @@ const renderUI = players => {
   selectedCards = []
 }
 
+const updateGroundCards = (cards) => {
+  cards.map(card => {
+    const cardElement = document.createElement('div')
+    cardElement.classList.add('card')
+
+    const cardImageElement = document.createElement('img')
+    cardImageElement.classList.add('card-image')
+    cardImageElement.src = 'assets/cards/' + mapCardToAsset(card) + '.jpg'
+    cardImageElement.setAttribute('draggable', false)
+    cardElement.appendChild(cardImageElement)
+
+    ground.appendChild(cardElement)
+  })
+}
+
 const getTurnElement = () => {
   if (player && player.id == playerTurnId) {
     return document.getElementById('player-turn')
@@ -261,18 +276,7 @@ socket.on('handPlayed', data => {
 
   while (ground.firstChild) ground.removeChild(ground.firstChild)
 
-  cards.map(card => {
-    const cardElement = document.createElement('div')
-    cardElement.classList.add('card')
-
-    const cardImageElement = document.createElement('img')
-    cardImageElement.classList.add('card-image')
-    cardImageElement.src = 'assets/cards/' + mapCardToAsset(card) + '.jpg'
-    cardImageElement.setAttribute('draggable', false)
-    cardElement.appendChild(cardImageElement)
-
-    ground.appendChild(cardElement)
-  })
+  updateGroundCards(cards)
 
   if (playerId === player.id) {
     selectedCards = []
@@ -307,6 +311,10 @@ socket.on('playerTurn', playerId => {
   if (playerTurnId === player.id && !spectating) {
     document.getElementById('turn-sound').play()
   }
+})
+
+socket.on('currentHand', cards => {
+  updateGroundCards(cards)
 })
 
 socket.on('roundComplete', winner => {

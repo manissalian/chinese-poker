@@ -58,6 +58,8 @@ io.on('connection', socket => {
       })
 
       socket.emit('playerTurn', game.getCurrentRound().getPlayerTurn())
+
+      socket.emit('currentHand', game.getCurrentRound().getCurrentHand().getCards())
     } else {
       socket.emit('passToLobby', lobby.getFilteredRooms())
     }
@@ -106,13 +108,18 @@ io.on('connection', socket => {
 
     const room = lobby.getRoomById(roomId)
     const user = lobby.getUserByName(name)
+    const game = room.getGame()
 
     room.addSpectator(user)
 
     socket.emit('spectatingRoom', {
       roomId,
-      players: room.getGame().getFilteredPlayers()
+      players: game.getFilteredPlayers()
     })
+
+    socket.emit('playerTurn', game.getCurrentRound().getPlayerTurn())
+
+    socket.emit('currentHand', game.getCurrentRound().getCurrentHand().getCards())
   })
 
   socket.on('quit', roomId => {

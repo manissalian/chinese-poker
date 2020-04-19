@@ -22,6 +22,10 @@ class Round {
     return this.playerTurn
   }
 
+  getCurrentHand () {
+    return this.currentHand
+  }
+
   getStatus () {
     return this.status
   }
