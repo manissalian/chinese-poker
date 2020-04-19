@@ -109,7 +109,10 @@ io.on('connection', socket => {
 
     room.addSpectator(user)
 
-    socket.emit('spectatingRoom', room.getGame().getFilteredPlayers())
+    socket.emit('spectatingRoom', {
+      roomId,
+      players: room.getGame().getFilteredPlayers()
+    })
   })
 
   socket.on('quit', roomId => {

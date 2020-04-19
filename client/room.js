@@ -220,10 +220,17 @@ socket.on('roundStarted', players => {
   renderUI(players)
 })
 
-socket.on('spectatingRoom', players => {
+socket.on('spectatingRoom', data => {
+  const {
+    roomId,
+    players
+  } = data
+
   spectating = true
 
   resetRoomUI()
+
+  _roomId = roomId
 
   const loginElement = document.getElementById('login')
   loginElement.classList.add('display-none')

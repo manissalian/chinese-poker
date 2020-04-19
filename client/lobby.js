@@ -40,7 +40,6 @@ socket.on('passToLobby', rooms => {
     spectateButtonElement.classList.add('spectate-room-btn')
     spectateButtonElement.innerHTML = 'Spectate'
     spectateButtonElement.addEventListener('click', () => {
-      roomId = room.id
       socket.emit('spectateRoom', {
         roomId: room.id,
         name: playerName
