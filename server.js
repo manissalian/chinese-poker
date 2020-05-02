@@ -119,7 +119,10 @@ io.on('connection', socket => {
 
     socket.emit('playerTurn', game.getCurrentRound().getPlayerTurn())
 
-    socket.emit('currentHand', game.getCurrentRound().getCurrentHand().getCards())
+    const currentHand = game.getCurrentRound().getCurrentHand()
+    if (currentHand) {
+      socket.emit('currentHand', currentHand.getCards())
+    }
   })
 
   socket.on('quit', roomId => {
