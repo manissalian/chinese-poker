@@ -117,11 +117,14 @@ io.on('connection', socket => {
       players: game.getFilteredPlayers()
     })
 
-    socket.emit('playerTurn', game.getCurrentRound().getPlayerTurn())
+    const currentRound = game.getCurrentRound()
+    if (currentRound) {
+      socket.emit('playerTurn', currentRound.getPlayerTurn())
 
-    const currentHand = game.getCurrentRound().getCurrentHand()
-    if (currentHand) {
-      socket.emit('currentHand', currentHand.getCards())
+      const currentHand = currentRound.getCurrentHand()
+      if (currentHand) {
+        socket.emit('currentHand', currentHand.getCards())
+      }
     }
   })
 
