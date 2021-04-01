@@ -65,6 +65,16 @@ io.on('connection', socket => {
     }
   })
 
+  socket.on('joinVoice', data => {
+    const {
+      peerId,
+      roomId
+    } = data
+
+    const room = lobby.getRoomById(roomId)
+    room.emitToUsers(io, 'joinedVoice', peerId)
+  })
+
   socket.on('joinRoom', data => {
     const {
       roomId,

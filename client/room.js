@@ -194,6 +194,8 @@ socket.on('joinedRoom', data => {
     players
   } = data
 
+  joinVoice(roomId)
+
   resetRoomUI()
 
   _roomId = roomId
@@ -240,6 +242,8 @@ socket.on('spectatingRoom', data => {
     roomId,
     players
   } = data
+
+  joinVoice(roomId)
 
   spectating = true
 
