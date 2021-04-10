@@ -38,6 +38,12 @@ html {
   }
 }
 
+@media only screen and (max-width: 640px) {
+  #chat-container {
+    display: none !important;
+  }
+}
+
 body {
   margin: 0.5rem;
 
@@ -97,9 +103,34 @@ body {
   position: relative;
 }
 
+#chat-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
 #peers-container {
   flex: 1;
   overflow-y: scroll;
+}
+
+#chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 25%;
+}
+
+#chat-messages {
+  flex: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-y: scroll;
+  background-color: white;
+}
+
+#chat-form {
+  display: flex;
 }
 
 .video-chat {

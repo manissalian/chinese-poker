@@ -152,6 +152,7 @@ const renderUI = players => {
 }
 
 const updateGroundCards = (cards) => {
+  if (!cards) return
   cards.map(card => {
     const cardElement = document.createElement('div')
     cardElement.classList.add('card')

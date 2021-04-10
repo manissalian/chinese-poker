@@ -59,8 +59,9 @@ io.on('connection', socket => {
       })
 
       if (currentRound) {
+        const currentHand = currentRound.getCurrentHand()
         socket.emit('playerTurn', currentRound.getPlayerTurn())
-        socket.emit('currentHand', currentRound.getCurrentHand().getCards())
+        socket.emit('currentHand', currentHand && currentHand.getCards())
       }
     } else {
       socket.emit('passToLobby', lobby.getFilteredRooms())
@@ -268,5 +269,17 @@ io.on('connection', socket => {
     currentRound.pass(player)
 
     room.emitToUsers(io, 'playerTurn', currentRound.getPlayerTurn())
+  })
+
+  socket.on('chat-message', data => {
+    const {
+      roomId,
+      playerId,
+      message
+    } = data
+
+    const room = lobby.getRoomById(roomId)
+
+    room.emitToUsers(io, 'chat-message', data)
   })
 })
