@@ -87,18 +87,37 @@ body {
   font-size: 0.8rem;
 }
 
+#room {
+  display: flex;
+  height: 100%;
+}
+
+#room-wrapper {
+  flex: 5;
+  position: relative;
+}
+
+#peers-container {
+  flex: 1;
+  overflow-y: scroll;
+}
+
+.video-chat {
+  width: 100%;
+}
+
 #player-deck {
   display: flex;
   justify-content: center;
 
-  position: fixed;
+  position: absolute;
   bottom: 0.5rem;
-  left: calc((100% - 78rem) / 2);
+  left: calc((100% - 62rem) / 2);
 
   padding: 0.5rem 0.25rem;
   box-sizing: border-box;
 
-  width: 78rem;
+  width: 62rem;
   height: 9.5rem;
 
   background-color: gray;
@@ -127,7 +146,7 @@ body {
 #action-btns {
   display: flex;
 
-  position: fixed;
+  position: absolute;
   bottom: 11.5rem;
   left: calc((100% - 24rem) / 2);
 }
@@ -153,9 +172,9 @@ body {
 }
 
 #player-name {
-  position: fixed;
+  position: absolute;
   bottom: 11.5rem;
-  left: calc((100% - 78rem) / 2);
+  left: calc((100% - 62rem) / 2);
 
   width: 24rem;
 
@@ -173,7 +192,7 @@ body {
   justify-content: center;
   align-items: center;
 
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
@@ -183,7 +202,7 @@ body {
 }
 
 #announcement {
-  position: fixed;
+  position: absolute;
   top: 14rem;
   left: calc((100% - 40rem)/2);
 
@@ -197,7 +216,7 @@ body {
 #opponent-deck-1,
 #opponent-deck-2,
 #opponent-deck-3 {
-  position: fixed;
+  position: absolute;
 
   background-color: gray;
 }
@@ -254,7 +273,7 @@ body {
 #opponent-name-1,
 #opponent-name-2,
 #opponent-name-3 {
-  position: fixed;
+  position: absolute;
 
   min-width: 5rem;
   max-width: 12rem;
@@ -286,7 +305,7 @@ body {
 #opponent-turn-1,
 #opponent-turn-2,
 #opponent-turn-3 {
-  position: fixed;
+  position: absolute;
 
   width: 2rem;
   height: 2rem;
@@ -327,7 +346,7 @@ body {
 #opponent-score-1,
 #opponent-score-2,
 #opponent-score-3 {
-  position: fixed;
+  position: absolute;
 
   font-family: monospace;
   font-size: 1.5rem;

@@ -49,6 +49,7 @@ io.on('connection', socket => {
       const room = lobby.getRoomById(roomId)
       const user = new User(socket.id, name)
       const game = room.getGame()
+      const currentRound = game.getCurrentRound()
 
       room.updateUser(user)
 
@@ -57,9 +58,10 @@ io.on('connection', socket => {
         players: game.getFilteredPlayers(name)
       })
 
-      socket.emit('playerTurn', game.getCurrentRound().getPlayerTurn())
-
-      socket.emit('currentHand', game.getCurrentRound().getCurrentHand().getCards())
+      if (currentRound) {
+        socket.emit('playerTurn', currentRound.getPlayerTurn())
+        socket.emit('currentHand', currentRound.getCurrentHand().getCards())
+      }
     } else {
       socket.emit('passToLobby', lobby.getFilteredRooms())
     }

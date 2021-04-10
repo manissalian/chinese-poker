@@ -39,38 +39,40 @@
     </div>
 
     <div id="room" class="display-none">
-      <div id="player-deck" class="deck"></div>
-      <div id="player-name"></div>
-      <div id="player-turn" class="turn display-none">T</div>
-      <div id="player-score"></div>
-      <div id="action-btns">
-        <div id="pass-btn" onclick="pass()">Pass</div>
-        <div id="play-btn" onclick="playHand()">Play</div>
+      <div id="room-wrapper">
+        <div id="player-deck" class="deck"></div>
+        <div id="player-name"></div>
+        <div id="player-turn" class="turn display-none">T</div>
+        <div id="player-score"></div>
+        <div id="action-btns">
+          <div id="pass-btn" onclick="pass()">Pass</div>
+          <div id="play-btn" onclick="playHand()">Play</div>
+        </div>
+
+        <div id="opponent-deck-1" class="deck"></div>
+        <div id="opponent-name-1"></div>
+        <div id="opponent-turn-1" class="turn display-none">T</div>
+        <div id="opponent-score-1" class="score"></div>
+
+        <div id="opponent-deck-2" class="deck"></div>
+        <div id="opponent-name-2"></div>
+        <div id="opponent-turn-2" class="turn display-none">T</div>
+        <div id="opponent-score-2" class="score"></div>
+
+        <div id="opponent-deck-3" class="deck"></div>
+        <div id="opponent-name-3"></div>
+        <div id="opponent-turn-3" class="turn display-none">T</div>
+        <div id="opponent-score-3" class="score"></div>
+
+        <div id="ground"></div>
+
+        <div id="announcement" class="display-none"></div>
+
+        <button id="quit" onclick="quit()">Quit Game</button>
       </div>
-
-      <div id="opponent-deck-1" class="deck"></div>
-      <div id="opponent-name-1"></div>
-      <div id="opponent-turn-1" class="turn display-none">T</div>
-      <div id="opponent-score-1" class="score"></div>
-
-      <div id="opponent-deck-2" class="deck"></div>
-      <div id="opponent-name-2"></div>
-      <div id="opponent-turn-2" class="turn display-none">T</div>
-      <div id="opponent-score-2" class="score"></div>
-
-      <div id="opponent-deck-3" class="deck"></div>
-      <div id="opponent-name-3"></div>
-      <div id="opponent-turn-3" class="turn display-none">T</div>
-      <div id="opponent-score-3" class="score"></div>
-
-      <div id="ground"></div>
-
-      <div id="announcement" class="display-none"></div>
-
-      <button id="quit" onclick="quit()">Quit Game</button>
+      <div id="peers-container"></div>
     </div>
 
     <audio id="turn-sound" src="assets/turn.mp3"></audio>
-    <div id="voice-chat"></div>
   </body>
 </html>
