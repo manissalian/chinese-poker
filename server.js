@@ -1,6 +1,11 @@
 const express = require('express')
 const app = express()
-const http = require('http').createServer(app)
+const fs = require('fs');
+const credentials = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
+const http = require('https').createServer(credentials, app)
 const port = process.env.PORT != null && process.env.PORT != '' ? process.env.PORT : 3000
 const io = require('socket.io')(http, {
   pingTimeout: 600 * 1000
@@ -14,6 +19,7 @@ const User = require('./user')
 // app.use(cors())
 
 app.use(express.static(__dirname + '/client'))
+app.use('/socket.io'express.static(__dirname + '/node_modules/socket.io'))
 
 http.listen(port, () => {
   console.log('listening on port: ' + port)
@@ -272,14 +278,20 @@ io.on('connection', socket => {
   })
 
   socket.on('chat-message', data => {
-    const {
-      roomId,
-      playerId,
-      message
-    } = data
-
+    const { roomId } = data
     const room = lobby.getRoomById(roomId)
-
-    room.emitToUsers(io, 'chat-message', data)
+    room && room.emitToUsers(io, 'chat-message', data)
   })
+
+  socket.on('quitVoice', data => {
+    console.log('emit quitVoice')
+    const { roomId } = data
+    const room = lobby.getRoomById(roomId)
+    room && room.emitToUsers(io, 'quitVoice', data)
+  })
+
+  socket.onAny(async (event, ...args) => {
+    const sockets = await io.fetchSockets();
+    console.log(`got ${event}`, ...args, sockets.length);
+  });
 })

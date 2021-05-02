@@ -75,20 +75,17 @@ class Room {
     this.game = new Game()
   }
 
-  emitToUsers (io, event, params) {
+  async emitToUsers (io, event, params) {
+    const sockets = await io.fetchSockets();
     this.users.map(user => {
-      const userSocket = io.of('/').connected[user.getSocketId()]
-
+      const userSocket = sockets.find(socket => socket.id === user.getSocketId())
       if (!userSocket) return
-
       userSocket.emit(event, params)
     })
 
     this.spectators.map(spectator => {
-      const spectatorSocket = io.of('/').connected[spectator.getSocketId()]
-
+      const spectatorSocket = sockets.find(socket => socket.id === spectator.getSocketId())
       if (!spectatorSocket) return
-
       spectatorSocket.emit(event, params)
     })
   }

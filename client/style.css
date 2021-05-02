@@ -38,12 +38,6 @@ html {
   }
 }
 
-@media only screen and (max-width: 640px) {
-  #chat-container {
-    display: none !important;
-  }
-}
-
 body {
   margin: 0.5rem;
 
@@ -385,7 +379,7 @@ body {
 
 #player-score {
   bottom: 11.5rem;
-  right: calc((100% - 78rem) / 2);
+  right: calc((100% - 62rem) / 2);
 }
 
 #opponent-score-1 {

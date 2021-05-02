@@ -1,8 +1,11 @@
-const getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
 const VIDEO = true
 let peer
+let joinVoice
+let callList = {};
+const getUserMedia = navigator.mediaDevices ? navigator.mediaDevices.getUserMedia : undefined
+let myStream
 
-const joinVoice = (roomId) => {
+joinVoice = (roomId) => {
   peer = new Peer()
 
   peer.on('open', (peerId) => {
@@ -15,40 +18,62 @@ const joinVoice = (roomId) => {
   })
 
   peer.on('call', (call) => {
-    getUserMedia(
-      {
+    if (myStream) {
+      call.answer(myStream)
+      call.on('stream', remoteStream => {
+        if (VIDEO) addVideoElement(remoteStream)
+        else addAudioElement(remoteStream)
+      })
+    } else if (getUserMedia) {
+      getUserMedia({
         video: VIDEO,
         audio: true
-      }, (stream) => {
-        userMediaSuccess(call, stream)
-      },
-      userMediaFail
-    )
+      }).then((stream) => {
+        myStream = stream
+        myStream.playerId = playerName
+        call.answer(myStream)
+        call.on('stream', remoteStream => {
+          if (VIDEO) addVideoElement(remoteStream)
+          else addAudioElement(remoteStream)
+        })
+      }).catch(userMediaFail)
+    }
   })
 }
 
 socket.on('joinedVoice', peerId => {
   if (peerId === peer.id) return
 
-  getUserMedia(
-    {
+  if (myStream) {
+    const call = peer.call(peerId, myStream)
+    call.on('stream', remoteStream => {
+      if (VIDEO) addVideoElement(remoteStream)
+      else addAudioElement(remoteStream)
+    })
+  } else if (getUserMedia) {
+    getUserMedia({
       video: VIDEO,
       audio: true
-    }, (stream) => {
-      const call = peer.call(peerId, stream)
-      userMediaSuccess(call, stream)
-    },
-    userMediaFail
-  )
+    }).then((stream) => {
+      myStream = stream
+      myStream.playerId = playerName
+      const call = peer.call(peerId, myStream)
+      call.on('stream', remoteStream => {
+        if (VIDEO) addVideoElement(remoteStream)
+        else addAudioElement(remoteStream)
+      })
+    }).catch(userMediaFail)
+  }
 })
 
-const userMediaSuccess = (call, stream) => {
-  call.answer(stream)
-  call.on('stream', (remoteStream) => {
-    if (VIDEO) addVideoElement(remoteStream)
-    else addAudioElement(remoteStream)
-  })
-}
+socket.on('quitVoice', ({ playerId }) => {
+  if (playerId === playerName) return
+  if (callList[playerId]) {
+    callList[playerId].remove()
+    delete callList[playerId]
+  }
+})
+
 const userMediaFail = (err) => {
   console.log('Failed to get local stream', err)
 }
@@ -63,10 +88,29 @@ const addAudioElement = (mediaSource) => {
 }
 
 const addVideoElement = (mediaSource) => {
+  if (callList[mediaSource.playerId]) {
+    callList[mediaSource.playerId].remove()
+  }
   const video = document.createElement('video')
+  callList[mediaSource.playerId] = video;
   video.className = 'video-chat'
   video.setAttribute('controls', '');
   video.srcObject = mediaSource
   document.getElementById('peers-container').appendChild(video)
   video.play()
+}
+
+const destroyPeerConnection = () => {
+  for (c in callList) {
+    callList[c].remove()
+  }
+  callList = {}
+  socket.emit("quitVoice", {
+    playerId: playerName,
+    peerId: peer.id,
+    roomId: _roomId,
+    streamId: myStream ? myStream.id : null
+  })
+  peer.destroy()
+  peer = undefined
 }

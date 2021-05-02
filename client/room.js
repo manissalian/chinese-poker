@@ -181,6 +181,7 @@ const quit = () => {
   } else {
     socket.emit('quit', _roomId)
   }
+  destroyPeerConnection();
 
   const roomElement = document.getElementById('room')
   roomElement.classList.add('display-none')
